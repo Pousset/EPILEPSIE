@@ -13,7 +13,7 @@
 | Site | Qualité / Infos | Secours / Status |
 | :--- | :--- | :--- |
 | **[FrenchStream](https://fs18.lol/)** | 1080p / Multi | [Domaine à jour](https://fstream.info/) |
-| **[Movix](https://movix.rodeo/)** | 1080p | [Aide Movix](https://www.movix.help/) |
+| **[Movix](https://movix.rodeo/)** | 1080p | [Aide Movix](https://movix.online/) |
 | **[SadisFlix](http://sadisflix-officiel.biz/)** | 1080p | [Sadis Wiki](https://sadis.wiki/) |
 | **[ToFlix](https://toflix.space/)** | Films & Animés | [Lien actuel](https://toflix.mom/) |
 | **[InfinityStream](https://infinitystream.cc/)** | 1080p | [Linkfly Status](https://linkfly.to/71125aiSwzObv) |
@@ -89,8 +89,10 @@
 | Site | Langue | Infos / Secours |
 | :--- | :--- | :--- |
 | **[Zone-Téléchargement](https://www.zone-telechargement.pizza/)** | 🇫🇷 | [Telegram Officiel](https://t.me/ZT_officiel/) |
+| **[Loadix](https://loadix.fun/)** | 🇫🇷 | DDL with movix VIP |
 | **[Wawacity](https://www.wawacity.pizza/)** | 🇫🇷 | Suivi domaines via Telegram |
 | **[Darkiworld](https://darkiworld2026.com/)** | 🇫🇷 | Catalogue important (DDL & Stream) |
+
 
 ***
 
@@ -100,6 +102,7 @@
 
 | Site | Catégorie | Particularité |
 | :--- | :--- | :--- |
+| **[Get Free Games](https://getfree.games/)** | Jeux PC | Liste des jeux gratuit du moment |
 | **[Gomorgames](https://gomorgames.com/)** | Jeux PC 🇫🇷 | Quali / [Discord](https://discord.gg/raWtANAZqF) |
 | **[Gog Games](https://www.gog-games.to/)** | Jeux PC | Archives Gog (DRM free) |
 | **[Gload](https://gload.cc/)** | Jeux PC | Archives de jeux |
