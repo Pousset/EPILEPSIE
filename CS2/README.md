@@ -223,20 +223,143 @@ Si `sv_infinite_ammo` est refusé par la console, active d'abord `sv_cheats 1` (
 exec train
 ```
 
-Il active typiquement des outils d'entraînement :
+Ce fichier transforme la map en **terrain de practice** : argent illimité, achats partout et à tout moment, aucun gel en début de round, respawn instantané, munitions infinies et aide aux grenades.
 
-- `sv_cheats 1` (requis pour la plupart des commandes de practice)
-- munitions et grenades infinies (`sv_infinite_ammo 1`)
-- trajectoire des grenades (`sv_grenade_trajectory_prac_pipreview 1`)
-- impacts de balles visibles (`sv_showimpacts 1`)
-- gestion des bots (`bot_kick`, `bot_stop`...)
-- remise à zéro rapide (`mp_restartgame 1`)
+Contenu du fichier :
 
-> `sv_cheats 1` désactive les succès et ne fonctionne qu'en local. Pour revenir à la normale : `sv_cheats 0` puis `exec autoexec`.
+```
+sv_cheats 1;
+bot_kick;
+mp_limitteams 0;
+mp_autoteambalance 0;
+mp_maxmoney 60000;
+mp_startmoney 60000;
+mp_buytime 9999;
+mp_buy_anywhere 1;
+mp_freezetime 0;
+mp_roundtime 60;
+mp_roundtime_defuse 60;
+mp_respawn_on_death_ct 1;
+mp_respawn_on_death_t 1;
+sv_infinite_ammo 1;
+sv_showimpacts 1;
+sv_showimpacts_time 10;
+ammo_grenade_limit_total 5;
+mp_warmup_end;
+mp_restartgame 1;
+sv_grenade_trajectory_prac_pipreview true;
+mp_roundtime 9999;
+mp_ignore_round_win_conditions;
+sv_regeneration_force_on 1;
+```
+
+#### Cheats et bots
+
+| Commande | Effet |
+|---|---|
+| `sv_cheats 1` | Autorise les commandes de triche (nécessaire pour le noclip, entre autres). Désactive les succès |
+| `bot_kick` | Retire tous les bots |
+| `mp_limitteams 0` | Aucune limite d'écart entre les équipes |
+| `mp_autoteambalance 0` | Pas d'équilibrage automatique des équipes |
+
+#### Argent et achats
+
+| Commande | Effet |
+|---|---|
+| `mp_startmoney 60000` | Argent de départ : 60 000 $ |
+| `mp_maxmoney 60000` | Plafond d'argent : 60 000 $ |
+| `mp_buytime 9999` | Temps d'achat quasi illimité |
+| `mp_buy_anywhere 1` | Achat possible partout sur la map |
+
+#### Rounds et respawn
+
+| Commande | Effet |
+|---|---|
+| `mp_freezetime 0` | Pas de phase de gel au début du round |
+| `mp_roundtime 60` puis `mp_roundtime 9999` | Durée du round en minutes. La seconde ligne écrase la première |
+| `mp_roundtime_defuse 60` | Durée du round sur les maps de désamorçage (`de_*`) : 60 minutes |
+| `mp_respawn_on_death_ct 1` / `_t 1` | Respawn instantané après la mort, dans les deux camps |
+| `mp_ignore_round_win_conditions` | Voir **Points d'attention** : écrite sans valeur, elle ne change rien |
+| `sv_regeneration_force_on 1` | Régénération de la vie |
+
+#### Aides à l'entraînement
+
+| Commande | Effet |
+|---|---|
+| `sv_infinite_ammo 1` | Chargeur infini : plus besoin de recharger (en 1v1, la valeur `2` demandait de recharger) |
+| `sv_showimpacts 1` | Affiche les impacts de balles |
+| `sv_showimpacts_time 10` | Les impacts restent visibles 10 secondes |
+| `sv_grenade_trajectory_prac_pipreview true` | Aperçu de la trajectoire en tenant une grenade |
+| `ammo_grenade_limit_total 5` | Jusqu'à 5 grenades au total |
+
+#### Lancement
+
+| Commande | Effet |
+|---|---|
+| `mp_warmup_end` | Termine l'échauffement |
+| `mp_restartgame 1` | Relance la partie après 1 seconde avec ces réglages |
+
+#### Utilisation
+
+À lancer **sur une map locale** :
+
+```
+exec train
+```
+
+Pour ajouter des bots : `bot_add_t` ou `bot_add_ct`. Pour les immobiliser : `bot_stop 1`.
+
+> `sv_cheats 1` désactive les succès et ne fonctionne qu'en local. Pour revenir à la normale : `sv_cheats 0`, puis relance la map.
+
+#### Points d'attention
+
+1. **`mp_ignore_round_win_conditions;` n'a aucun effet.** Écrite sans valeur, la commande affiche seulement sa valeur actuelle dans la console. Pour empêcher le round de se terminer (explosion de la bombe, équipe éliminée), écris `mp_ignore_round_win_conditions 1;`.
+2. **`mp_roundtime` est défini deux fois** (`60`, puis `9999`). Seule la dernière compte. Sur les maps `de_*`, c'est `mp_roundtime_defuse 60` qui s'applique : le round dure 60 minutes, ce qui suffit pour s'entraîner.
+3. **`mp_restartgame 1` est au milieu du fichier.** Les commandes qui suivent sont quand même appliquées, car le redémarrage prend 1 seconde. Pour plus de lisibilité, place-le tout à la fin.
+4. **Pas de retour automatique au 1v1.** Ce fichier active des réglages que `1v1.cfg` ne remet pas à zéro (`mp_respawn_on_death_*`, `mp_startmoney`, `mp_buytime`, `mp_buy_anywhere`, `sv_showimpacts`). Si tu lances `exec 1v1` juste après, les joueurs ressusciteront. Relance la map entre les deux modes, ou ajoute à `1v1.cfg` les valeurs inverses (`mp_respawn_on_death_ct 0`, `mp_respawn_on_death_t 0`, etc.).
+5. **Noclip :** ton bind `ALT` de l'`autoexec.cfg` (`sv_cheats 1; noclip`) serait plus à sa place ici. Tu peux le remplacer dans `autoexec.cfg` par rien, et ajouter dans `train.cfg` : `bind "ALT" "noclip"`.
 
 ### `cs2_video.txt` : paramètres vidéo
 
-Fichier généré et lu par le jeu. Il stocke : résolution, mode d'affichage (plein écran / fenêtré), qualité des ombres, des textures, anti-aliasing, limite de FPS, etc.
+Fichier généré et lu par le jeu (en-tête `"video.cfg"`, version `16`). Il stocke la résolution, le mode d'affichage, la qualité graphique et les options de latence. Ce n'est pas un script : il ne se lance pas avec `exec`, le jeu le lit seul au démarrage.
+
+#### Ton profil actuel
+
+| Domaine | Clé | Valeur | Signification |
+|---|---|---|---|
+| Matériel | `VendorID` | `4318` | Identifiant du fabricant de la carte graphique (4318 = NVIDIA) |
+| Matériel | `DeviceID` | `7938` | Identifiant du modèle de carte graphique |
+| Niveaux auto | `cpu_level`, `gpu_mem_level`, `gpu_level` | `2`, `3`, `3` | Niveaux de performance détectés par le jeu, avec `Autoconfig 2` |
+| Résolution | `defaultres` / `defaultresheight` | `1024` / `768` | Résolution 1024x768 |
+| Format | `aspectratiomode` | `0` | 4:3 (cohérent avec 1024x768) |
+| Fréquence | `refreshrate_numerator` / `denominator` | `0` / `0` | Automatique |
+| Mode d'affichage | `fullscreen` | `0` | Pas de plein écran |
+| Mode d'affichage | `nowindowborder` | `1` | Fenêtre sans bordure |
+| Mode d'affichage | `coop_fullscreen` | `1` | Plein écran « coopératif » activé |
+| Mode d'affichage | `fullscreen_min_on_focus_loss` | `0` | Le jeu ne se réduit pas quand la fenêtre perd le focus |
+| Écran | `monitor_index` | `0` | Écran principal |
+| Écran | `high_dpi` | `0` | Mise à l'échelle haute densité désactivée |
+| Synchro | `mat_vsync` | `0` | VSync désactivée |
+| Latence | `r_low_latency` | `1` | NVIDIA Reflex activé (`2` = activé + boost) |
+| Anti-aliasing | `msaa_samples` | `4` | MSAA 4x |
+| Anti-aliasing | `r_csgo_cmaa_enable` | `0` | CMAA2 désactivé |
+| Mise à l'échelle | `videocfg_fsr_detail` | `0` | FSR désactivé |
+| Qualité | `videocfg_shadow_quality` | `2` | Ombres : niveau 2 |
+| Qualité | `videocfg_dynamic_shadows` | `1` | Ombres dynamiques activées |
+| Qualité | `videocfg_texture_detail` | `2` | Textures : niveau 2 |
+| Qualité | `videocfg_particle_detail` | `2` | Particules : niveau 2 |
+| Qualité | `videocfg_ao_detail` | `2` | Occlusion ambiante : niveau 2 |
+| Qualité | `videocfg_hdr_detail` | `-1` | Valeur par défaut |
+| Qualité | `shaderquality` | `1` | Qualité des shaders |
+| Qualité | `r_texturefilteringquality` | `3` | Filtrage des textures : niveau 3 |
+
+#### À savoir
+
+- **Résolution 1024x768 :** avec `fullscreen 0`, tu obtiens une fenêtre de cette taille. Pour l'étirer sur tout l'écran, passe en plein écran dans `Paramètres` → `Vidéo`.
+- **MSAA 4x :** c'est l'option la plus coûteuse de ce profil. Si tu manques de FPS, c'est la première à baisser.
+- **Transfert vers un autre PC :** `VendorID`, `DeviceID`, `Autoconfig` et les niveaux `*_level` sont liés à ta carte graphique. Si l'autre PC a un autre matériel, ouvre `Paramètres` → `Vidéo` pour vérifier les réglages.
+
+#### Utilisation
 
 - Il se modifie normalement via `Paramètres` → `Vidéo`.
 - On le copie surtout pour **transférer ses réglages** d'un PC à un autre ou pour les sauvegarder.
@@ -268,11 +391,11 @@ Fichier généré et lu par le jeu. Il stocke : résolution, mode d'affichage (p
    ```
    exec train
    ```
-3. S'entraîner, puis quitter ou taper :
+3. S'entraîner, puis taper :
    ```
    sv_cheats 0
-   exec autoexec
    ```
+   et relancer la map (ou quitter) pour remettre à zéro les réglages serveur de `train.cfg`.
 
 ---
 
