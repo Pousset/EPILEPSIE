@@ -119,8 +119,7 @@ Le reste du fichier regroupe des sections héritées : manette (`joy_*`), camér
 #### Points d'attention
 
 1. **Bind `ALT` = `sv_cheats 1; noclip`.** En local, il fait voler et traverser les murs (vitesse réglée par `sv_noclipspeed 1200`). Mais `ALT` sert aussi à `ALT+TAB` : tu risques d'activer le noclip par accident. Mieux vaut déplacer ce bind dans `train.cfg`.
-2. **Le fichier ressemble à un export complet d'une ancienne config CS:GO** (certaines valeurs datent de 2021). Les lignes `mm_*`, `ui_*`, `cachedvalue_*`, `joy_*`, `cam_*`, etc. servent peu ou plus du tout dans CS2, et celles qui n'existent plus affichent `Unknown command` dans la console au lancement. Je ne peux pas te dire ligne par ligne lesquelles sont obsolètes : ouvre la console après le démarrage et note les erreurs. Un autoexec allégé (binds, audio, radar, viewmodel, souris, viseur) est plus simple à maintenir.
-3. **Données personnelles.** `name` et `cl_clanid` (ID de groupe Steam) identifient ton compte : retire-les avant de publier le fichier sur GitHub.
+
 
 ### `1v1.cfg` : duel 1v1
 
@@ -327,8 +326,6 @@ Fichier généré et lu par le jeu (en-tête `"video.cfg"`, version `16`). Il st
 
 | Domaine | Clé | Valeur | Signification |
 |---|---|---|---|
-| Matériel | `VendorID` | `4318` | Identifiant du fabricant de la carte graphique (4318 = NVIDIA) |
-| Matériel | `DeviceID` | `7938` | Identifiant du modèle de carte graphique |
 | Niveaux auto | `cpu_level`, `gpu_mem_level`, `gpu_level` | `2`, `3`, `3` | Niveaux de performance détectés par le jeu, avec `Autoconfig 2` |
 | Résolution | `defaultres` / `defaultresheight` | `1024` / `768` | Résolution 1024x768 |
 | Format | `aspectratiomode` | `0` | 4:3 (cohérent avec 1024x768) |
@@ -357,7 +354,6 @@ Fichier généré et lu par le jeu (en-tête `"video.cfg"`, version `16`). Il st
 
 - **Résolution 1024x768 :** avec `fullscreen 0`, tu obtiens une fenêtre de cette taille. Pour l'étirer sur tout l'écran, passe en plein écran dans `Paramètres` → `Vidéo`.
 - **MSAA 4x :** c'est l'option la plus coûteuse de ce profil. Si tu manques de FPS, c'est la première à baisser.
-- **Transfert vers un autre PC :** `VendorID`, `DeviceID`, `Autoconfig` et les niveaux `*_level` sont liés à ta carte graphique. Si l'autre PC a un autre matériel, ouvre `Paramètres` → `Vidéo` pour vérifier les réglages.
 
 #### Utilisation
 
