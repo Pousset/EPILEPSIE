@@ -4,7 +4,8 @@
 import { useEffect, useState } from "react";
 import { fakeSeizures, type Seizure } from "@/data/fakeSeizures";
 
-const STORAGE_KEY = "calendrier-crises-v1";
+// v2 : repart de zéro (l'ancienne clé v1 contenait les données d'exemple mélangées)
+const STORAGE_KEY = "calendrier-crises-v2";
 
 const MONTHS = [
   "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
@@ -16,8 +17,14 @@ const TRIGGERS = [
   "Aucun identifié", "Fatigue", "Manque de sommeil", "Stress", "Oubli de traitement", "Autre",
 ];
 
-export default function SeizureCalendar() {
-  const [seizures, setSeizures] = useState<Seizure[]>(fakeSeizures);
+type Props = {
+  mode?: "demo" | "personal";
+};
+
+export default function SeizureCalendar({ mode = "demo" }: Props) {
+  const isPersonal = mode === "personal";
+
+  const [seizures, setSeizures] = useState<Seizure[]>(isPersonal ? [] : fakeSeizures);
   const [loaded, setLoaded] = useState(false);
   const [year, setYear] = useState(2026);
   const [month, setMonth] = useState(10); // 10 = novembre
@@ -30,24 +37,29 @@ export default function SeizureCalendar() {
   const [duration, setDuration] = useState("");
   const [trigger, setTrigger] = useState(TRIGGERS[0]);
 
-  // 1. Au premier affichage : on récupère ce qui est sauvegardé
+  // 1. Mode personnel : on récupère les données sauvegardées et on affiche le mois actuel
+  //    (new Date() est autorisé ici : un useEffect ne s'exécute que dans le navigateur)
   useEffect(() => {
+    if (!isPersonal) return;
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) setSeizures(JSON.parse(saved));
     } catch {
-      // localStorage indisponible (navigation privée, etc.) : on garde les exemples
+      // localStorage indisponible (navigation privée, etc.) : on reste sur une liste vide
     }
+    const now = new Date();
+    setYear(now.getFullYear());
+    setMonth(now.getMonth());
     setLoaded(true);
-  }, []);
+  }, [isPersonal]);
 
-  // 2. À chaque modification : on sauvegarde
+  // 2. Mode personnel : on sauvegarde à chaque modification
   useEffect(() => {
-    if (!loaded) return; // évite d'écraser les données avant de les avoir lues
+    if (!isPersonal || !loaded) return; // évite d'écraser les données avant de les avoir lues
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(seizures));
     } catch {}
-  }, [seizures, loaded]);
+  }, [seizures, loaded, isPersonal]);
 
   const offset = (new Date(year, month, 1).getDay() + 6) % 7; // lundi = 0
   const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -89,10 +101,11 @@ export default function SeizureCalendar() {
     setDuration("");
     setShowForm(false);
   }
+
   function handleDelete(target: Seizure) {
-  if (!confirm("Supprimer cette crise ?")) return;
-  setSeizures((prev) => prev.filter((s) => s !== target));
-}
+    if (!confirm("Supprimer cette crise ?")) return;
+    setSeizures((prev) => prev.filter((s) => s !== target));
+  }
 
   const selectedSeizures = selected ? seizuresOn(selected) : [];
 
@@ -140,36 +153,29 @@ export default function SeizureCalendar() {
             </button>
           );
         })}
-
       </div>
-        <button
-  onClick={() => setSeizures(fakeSeizures)}
-  className="mt-4 text-sm text-gray-500 underline"
->
-  Remettre les données d'exemple
-</button>
 
       {selected && (
         <div className="mt-4 space-y-2 text-sm">
           {selectedSeizures.length === 0 && <p>Aucune crise notée ce jour-là.</p>}
-{selectedSeizures.map((s, i) => (
-  <div key={i} className="flex items-start justify-between rounded border p-2">
-    <div>
-      <p className="font-medium">{s.type} à {s.time}</p>
-      <p className="text-gray-500">
-        Durée : {s.duration} · Déclencheur : {s.trigger}
-      </p>
-    </div>
-    <button
-      onClick={() => handleDelete(s)}
-      aria-label="Supprimer cette crise"
-      className="px-2 text-red-600 hover:underline"
-    >
-      Supprimer
-    </button>
-  </div>
-))}
 
+          {selectedSeizures.map((s, i) => (
+            <div key={i} className="flex items-start justify-between rounded border p-2">
+              <div>
+                <p className="font-medium">{s.type} à {s.time}</p>
+                <p className="text-gray-500">
+                  Durée : {s.duration} · Déclencheur : {s.trigger}
+                </p>
+              </div>
+              <button
+                onClick={() => handleDelete(s)}
+                aria-label="Supprimer cette crise"
+                className="px-2 text-red-600 hover:underline"
+              >
+                Supprimer
+              </button>
+            </div>
+          ))}
 
           {!showForm ? (
             <button
@@ -244,6 +250,12 @@ export default function SeizureCalendar() {
           )}
         </div>
       )}
+
+      <p className="mt-4 text-xs text-gray-500">
+        {isPersonal
+          ? "Tes données sont enregistrées uniquement dans ce navigateur, sur cet appareil."
+          : "Exemple : ces données sont fictives et ne sont pas enregistrées."}
+      </p>
     </div>
   );
 }

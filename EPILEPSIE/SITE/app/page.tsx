@@ -10,7 +10,13 @@ export default function HomePage() {
         Note tes crises dans un calendrier pour mieux comprendre ton quotidien
         et en parler à ton médecin. Voici un exemple avec de fausses données.
       </p>
-      <SeizureCalendar />
+      <SeizureCalendar mode="demo" />
+      <Link
+        href="/calendrier"
+        className="rounded-lg bg-black px-6 py-3 text-white hover:opacity-80 dark:bg-white dark:text-black"
+      >
+        Commencer mon calendrier
+      </Link>
     </section>
   );
 }
