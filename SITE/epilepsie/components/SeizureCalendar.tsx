@@ -1,8 +1,10 @@
 // components/SeizureCalendar.tsx
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { fakeSeizures, type Seizure } from "@/data/fakeSeizures";
+
+const STORAGE_KEY = "calendrier-crises-v1";
 
 const MONTHS = [
   "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
@@ -16,6 +18,7 @@ const TRIGGERS = [
 
 export default function SeizureCalendar() {
   const [seizures, setSeizures] = useState<Seizure[]>(fakeSeizures);
+  const [loaded, setLoaded] = useState(false);
   const [year, setYear] = useState(2026);
   const [month, setMonth] = useState(10); // 10 = novembre
   const [selected, setSelected] = useState<string | null>(null);
@@ -26,6 +29,25 @@ export default function SeizureCalendar() {
   const [type, setType] = useState(TYPES[0]);
   const [duration, setDuration] = useState("");
   const [trigger, setTrigger] = useState(TRIGGERS[0]);
+
+  // 1. Au premier affichage : on récupère ce qui est sauvegardé
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) setSeizures(JSON.parse(saved));
+    } catch {
+      // localStorage indisponible (navigation privée, etc.) : on garde les exemples
+    }
+    setLoaded(true);
+  }, []);
+
+  // 2. À chaque modification : on sauvegarde
+  useEffect(() => {
+    if (!loaded) return; // évite d'écraser les données avant de les avoir lues
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(seizures));
+    } catch {}
+  }, [seizures, loaded]);
 
   const offset = (new Date(year, month, 1).getDay() + 6) % 7; // lundi = 0
   const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -114,7 +136,14 @@ export default function SeizureCalendar() {
             </button>
           );
         })}
+
       </div>
+        <button
+  onClick={() => setSeizures(fakeSeizures)}
+  className="mt-4 text-sm text-gray-500 underline"
+>
+  Remettre les données d'exemple
+</button>
 
       {selected && (
         <div className="mt-4 space-y-2 text-sm">
