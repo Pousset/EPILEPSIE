@@ -89,6 +89,10 @@ export default function SeizureCalendar() {
     setDuration("");
     setShowForm(false);
   }
+  function handleDelete(target: Seizure) {
+  if (!confirm("Supprimer cette crise ?")) return;
+  setSeizures((prev) => prev.filter((s) => s !== target));
+}
 
   const selectedSeizures = selected ? seizuresOn(selected) : [];
 
@@ -148,15 +152,24 @@ export default function SeizureCalendar() {
       {selected && (
         <div className="mt-4 space-y-2 text-sm">
           {selectedSeizures.length === 0 && <p>Aucune crise notée ce jour-là.</p>}
+{selectedSeizures.map((s, i) => (
+  <div key={i} className="flex items-start justify-between rounded border p-2">
+    <div>
+      <p className="font-medium">{s.type} à {s.time}</p>
+      <p className="text-gray-500">
+        Durée : {s.duration} · Déclencheur : {s.trigger}
+      </p>
+    </div>
+    <button
+      onClick={() => handleDelete(s)}
+      aria-label="Supprimer cette crise"
+      className="px-2 text-red-600 hover:underline"
+    >
+      Supprimer
+    </button>
+  </div>
+))}
 
-          {selectedSeizures.map((s, i) => (
-            <div key={i} className="rounded border p-2">
-              <p className="font-medium">{s.type} à {s.time}</p>
-              <p className="text-gray-500">
-                Durée : {s.duration} · Déclencheur : {s.trigger}
-              </p>
-            </div>
-          ))}
 
           {!showForm ? (
             <button
