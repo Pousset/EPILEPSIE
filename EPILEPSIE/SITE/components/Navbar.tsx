@@ -12,6 +12,7 @@ export default function Navbar() {
         <li><Link href="/about">À propos</Link></li>
         <li><Link href="/contact">Contact</Link></li>
         <li><Link href="/calendrier">Calendrier</Link></li>
+        <li><Link href="/connexion">Connexion</Link></li>
       </ul>
     </nav>
   );
