@@ -1,0 +1,30 @@
+SML.di(`./uxL7CV_Qke.js`,import.meta.url,`uxL7CV_Qke`),SML.di(`./DNwDKU5zgH.js`,import.meta.url,`DNwDKU5zgH`),SML.di(`./DuXLOWLsaV.js`,import.meta.url,`DuXLOWLsaV`);
+SML.di(`./DGPisoaFEk.js`,import.meta.url,`DGPisoaFEk`),SML.di(`./F5a0y4pwNt.js`,import.meta.url,`F5a0y4pwNt`),SML.di(`./i7zNojDuDu.js`,import.meta.url,`i7zNojDuDu`),SML.dm(`DuXLOWLsaV`,[`DGPisoaFEk`,`F5a0y4pwNt`,`i7zNojDuDu`],async(e,t,n)=>{var r=`mod-realtime-action-listener[updateAnimation~='light'] > * {
+  animation: realtimeFade 3s;
+  animation-timing-function: ease-out;
+}
+mod-realtime-action-listener[updateAnimation~='dark'] > * {
+  animation: realtimeFadeNight 3s;
+  animation-timing-function: ease-out;
+}
+@keyframes realtimeFade {
+  from {
+    background-color: #fff2bd;
+    border: 1px solid #dbaf00;
+  }
+  to {
+    background-color: #f0f5f9;
+    border: 1px solid transparent;
+  }
+}
+@keyframes realtimeFadeNight {
+  from {
+    background-color: #665505;
+    border: 1px solid #382d03;
+  }
+  to {
+    background-color: #030303;
+    border: 1px solid #343536;
+  }
+}
+`;let i=new Set([t.co.ApproveComment,t.co.ApproveLink,t.co.RemoveComment,t.co.RemoveLink,t.co.SpamComment,t.co.SpamLink,t.co.AddRemovalReason,t.co.UpdateRemovalReason]),a=class extends e.s{constructor(){super(),this.updateAnimation=``,this.thingId=``,this.userId=``,this.updateState=void 0,this._isVisible=!1,this._pubsub=new t.zu(this),this.handleIncomingRealtimeUpdate=e=>{let{moderatorID:t,targetID:n,action:r}=e;n!==this.thingId||t===this.userId||!i.has(r)||(this.updateState=e,this.triggerRealtimeUpdateAnimation())},this.onItemEnterIntoView=()=>{this._isVisible=!0,this.triggerRealtimeUpdateAnimation()},this.onItemLeaveView=()=>{this._isVisible=!1},this.triggerRealtimeUpdateAnimation=()=>{if(!this._isVisible||!this.updateState)return;this.updateAnimation=t.Wt()?`dark`:`light`;let e=n.g(this.updateState.action);n.p(this.thingId,e,!0),this.updateState=void 0},new t.od(this,this,{threshold:[.5]})}connectedCallback(){this._pubsub.subscribe(`mod_realtime_update`,this.handleIncomingRealtimeUpdate),this.addEventListener(`faceplate-enter`,this.onItemEnterIntoView),this.addEventListener(`faceplate-leave`,this.onItemLeaveView),super.connectedCallback()}disconnectedCallback(){this.removeEventListener(`faceplate-enter`,this.onItemEnterIntoView),this.removeEventListener(`faceplate-leave`,this.onItemLeaveView),super.disconnectedCallback()}render(){return e.x`<slot></slot>`}};a.styles=[e.i`:host{width:100%}`,t.Wd(r),t.Ud],t.Hd([t.af({type:String,reflect:!0})],a.prototype,`updateAnimation`,void 0),t.Hd([t.af({type:String,attribute:`thing-id`})],a.prototype,`thingId`,void 0),t.Hd([t.af({type:String,attribute:`user-id`})],a.prototype,`userId`,void 0),a=t.Hd([t.of(`mod-realtime-action-listener`)],a)});
