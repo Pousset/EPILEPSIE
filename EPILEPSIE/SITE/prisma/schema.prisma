@@ -1,0 +1,19 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Seizure {
+  id        String   @id @default(cuid())
+  date      String   // AAAA-MM-JJ, comme dans le calendrier actuel
+  time      String   // HH:MM
+  type      String
+  duration  String
+  trigger   String
+  createdAt DateTime @default(now())
+}
