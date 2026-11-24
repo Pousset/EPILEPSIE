@@ -1,6 +1,6 @@
 // app/page.tsx
-import Link from "next/link";
 import SeizureCalendar from "@/components/SeizureCalendar";
+import StartCalendarButton from "@/components/StartCalendarButton";
 
 export default function HomePage() {
   return (
@@ -11,12 +11,7 @@ export default function HomePage() {
         et en parler à ton médecin. Voici un exemple avec de fausses données.
       </p>
       <SeizureCalendar mode="demo" />
-      <Link
-        href="/calendrier"
-        className="rounded-lg bg-black px-6 py-3 text-white hover:opacity-80 dark:bg-white dark:text-black"
-      >
-        Commencer mon calendrier
-      </Link>
+      <StartCalendarButton />
     </section>
   );
 }
