@@ -166,11 +166,15 @@ Les commandes destructives comme `prisma migrate reset`, `prisma db push --force
 1. Lire le README concerné et les fichiers appelants.
 2. Vérifier l'état Git avant de modifier des fichiers.
 3. Faire la modification la plus ciblée possible.
-4. Mettre à jour la documentation si l'architecture ou une commande change.
-5. Vérifier les diagnostics TypeScript/éditeur lorsque disponibles.
-6. Lancer les validations adaptées : `pnpm lint`, `pnpm build` et les commandes Prisma nécessaires.
-7. Résumer les fichiers modifiés, les vérifications exécutées et les éventuels points restant à traiter.
-8. Donner systématiquement un nom de commit bien décrit, en français, qui résume précisément l'objectif de la modification.
+4. Mettre à jour le README correspondant au dossier ou à la feature modifiée.
+5. Mettre à jour la copie correspondante dans `docs/` lorsque la documentation locale change.
+6. Documenter en parallèle `docs/functions.md` dès qu'une fonction, un handler, un composant ou un export documenté est ajouté, supprimé ou modifié.
+7. Vérifier les diagnostics TypeScript/éditeur lorsque disponibles.
+8. Lancer les validations adaptées : `pnpm lint`, `pnpm build` et les commandes Prisma nécessaires.
+9. Résumer les fichiers modifiés, les vérifications exécutées et les éventuels points restant à traiter.
+10. Donner systématiquement un nom de commit bien décrit, en français, qui résume précisément l'objectif de la modification.
+
+La documentation doit évoluer dans le même changement que le code : ne pas repousser la mise à jour des README ou de `docs/functions.md` à une étape ultérieure. Si une fonction change de comportement, modifier sa description et, si nécessaire, son lien ou son numéro de ligne dans `docs/functions.md`.
 
 ## Commits
 
