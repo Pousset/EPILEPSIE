@@ -5,6 +5,7 @@ import { useState } from "react";
 import { fakeSeizures, type Seizure } from "@/data/fakeSeizures";
 import { SEIZURE_TYPES, SEIZURE_TRIGGERS } from "@/lib/seizure-options";
 import { addSeizure, deleteSeizure } from "@/app/calendrier/actions";
+import { dateKey, exportSeizuresPdf, formatDate } from "@/lib/export-pdf";
 
 const MONTHS = [
   "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
@@ -12,11 +13,14 @@ const MONTHS = [
 ];
 const DAYS = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
 
+type Period = "month" | "3m" | "6m" | "all";
+
 type Props = {
   mode?: "demo" | "personal";
   initialSeizures?: Seizure[];
   initialYear?: number;
   initialMonth?: number;
+  userName?: string;
 };
 
 export default function SeizureCalendar({
@@ -24,6 +28,7 @@ export default function SeizureCalendar({
   initialSeizures,
   initialYear = 2026,
   initialMonth = 10, // 10 = novembre (utilisé par la démo)
+  userName,
 }: Props) {
   const isPersonal = mode === "personal";
 
@@ -36,6 +41,11 @@ export default function SeizureCalendar({
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+
+  // Export PDF
+  const [period, setPeriod] = useState<Period>("3m");
+  const [exporting, setExporting] = useState(false);
+  const [exportError, setExportError] = useState("");
 
   // Champs du formulaire
   const [time, setTime] = useState("12:00");
@@ -109,6 +119,40 @@ export default function SeizureCalendar({
       setSeizures((prev) => prev.filter((s) => s !== target));
     } catch {
       setError("Impossible de supprimer la crise. Réessaie.");
+    }
+  }
+
+  async function handleExport() {
+    if (exporting) return;
+    setExportError("");
+
+    let list = seizures;
+    let label = "Toutes les crises";
+
+    if (period === "month") {
+      list = seizures.filter((s) => s.date.startsWith(monthPrefix));
+      label = `${MONTHS[month]} ${year}`;
+    } else if (period === "3m" || period === "6m") {
+      const months = period === "3m" ? 3 : 6;
+      const now = new Date();
+      const fromKey = dateKey(new Date(now.getFullYear(), now.getMonth() - months, now.getDate()));
+      const untilKey = dateKey(now);
+      list = seizures.filter((s) => s.date >= fromKey && s.date <= untilKey);
+      label = `${months} derniers mois (du ${formatDate(fromKey)} au ${formatDate(untilKey)})`;
+    }
+
+    if (list.length === 0) {
+      setExportError("Aucune crise sur cette période.");
+      return;
+    }
+
+    setExporting(true);
+    try {
+      await exportSeizuresPdf({ seizures: list, userName: userName ?? "", periodLabel: label });
+    } catch {
+      setExportError("Impossible de créer le PDF. Réessaie.");
+    } finally {
+      setExporting(false);
     }
   }
 
@@ -257,6 +301,33 @@ export default function SeizureCalendar({
               </div>
             </div>
           )}
+        </div>
+      )}
+
+      {isPersonal && (
+        <div className="mt-4 space-y-2 border-t pt-4 text-sm">
+          <p className="font-medium">Exporter pour mon médecin</p>
+          <div className="flex gap-2">
+            <select
+              value={period}
+              onChange={(e) => setPeriod(e.target.value as Period)}
+              aria-label="Période à exporter"
+              className="flex-1 rounded border bg-transparent p-2"
+            >
+              <option value="month" className="text-black">Mois affiché</option>
+              <option value="3m" className="text-black">3 derniers mois</option>
+              <option value="6m" className="text-black">6 derniers mois</option>
+              <option value="all" className="text-black">Toutes les crises</option>
+            </select>
+            <button
+              onClick={handleExport}
+              disabled={exporting}
+              className="rounded border px-4 py-2 hover:bg-gray-200 disabled:opacity-50 dark:hover:bg-gray-800"
+            >
+              {exporting ? "Création…" : "Exporter en PDF"}
+            </button>
+          </div>
+          {exportError && <p role="alert" className="text-red-600">{exportError}</p>}
         </div>
       )}
 
