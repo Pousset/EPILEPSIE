@@ -181,6 +181,15 @@ Les commandes destructives comme `prisma migrate reset`, `prisma db push --force
 
 La documentation doit évoluer dans le même changement que le code : ne pas repousser la mise à jour des README ou de `docs/functions.md` à une étape ultérieure. Si une fonction change de comportement, modifier sa description et, si nécessaire, son lien ou son numéro de ligne dans `docs/functions.md`.
 
+## Règles pour les assistants IA
+
+- Consulter le README de la feature concernée avant toute modification.
+- Vérifier le code source concerné avant toute modification.
+- Respecter la séparation entre logique serveur et logique client.
+- Ne jamais exposer de secrets, d'accès à la base de données ou de logique sensible côté client.
+- Mettre à jour le README de la feature lorsque son architecture, ses responsabilités ou ses conventions évoluent.
+- Ne pas modifier les autres features sans nécessité technique.
+
 ## Commits
 
 Utiliser les préfixes suivants :
