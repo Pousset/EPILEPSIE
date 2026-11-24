@@ -172,6 +172,10 @@ Documentation détaillée :
 - [`prisma/README.md`](./prisma/README.md) — schéma et migrations ;
 - [`docs/README.md`](./docs/README.md) — index centralisé de la documentation ;
 - [`docs/functions.md`](./docs/functions.md) — référence des fonctions et handlers du site ;
+- [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) — architecture technique et flux ;
+- [`docs/DATABASE.md`](./docs/DATABASE.md) — base de données, modèles et migrations ;
+- [`docs/API.md`](./docs/API.md) — routes, Server Actions et échanges de données ;
+- [`docs/CONVENTIONS.md`](./docs/CONVENTIONS.md) — conventions de code et de contribution ;
 - [`.agents/README.md`](./.agents/README.md) — documentation destinée aux assistants IA.
 
 ## Flux applicatifs

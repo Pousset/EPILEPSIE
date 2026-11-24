@@ -82,6 +82,11 @@ Documentation à consulter avant une modification importante :
 
 - `README.md` à la racine pour la vue d'ensemble ;
 - `docs/` pour la copie centralisée de la documentation du projet ;
+- `docs/ARCHITECTURE.md` pour les couches et les flux ;
+- `docs/DATABASE.md` pour la base, Prisma et les migrations ;
+- `docs/API.md` pour les routes, actions serveur et échanges de données ;
+- `docs/CONVENTIONS.md` pour les règles de code, sécurité et contribution ;
+- `docs/functions.md` pour le catalogue des fonctions et handlers ;
 - `app/README.md` pour les routes ;
 - `features/README.md` pour l'organisation métier ;
 - `features/auth/README.md` pour l'authentification ;

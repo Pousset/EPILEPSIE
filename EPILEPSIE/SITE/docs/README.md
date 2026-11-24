@@ -17,6 +17,10 @@ Ce dossier regroupe les copies centralisées de la documentation du projet Calen
 | [`agents.md`](./agents.md) | Skills et instructions destinés aux assistants IA. |
 | [`next.md`](./next.md) | Dossier `.next` généré par Next.js. |
 | [`functions.md`](./functions.md) | Référence des fonctions et handlers du site. |
+| [`ARCHITECTURE.md`](./ARCHITECTURE.md) | Organisation technique et flux entre les couches. |
+| [`DATABASE.md`](./DATABASE.md) | Modèles, migrations et règles d'accès à la base. |
+| [`API.md`](./API.md) | Routes Better Auth, Server Actions et échanges de données. |
+| [`CONVENTIONS.md`](./CONVENTIONS.md) | Conventions de code, sécurité, documentation et commits. |
 
 ## Documentation canonique
 
