@@ -31,12 +31,6 @@ ENV DATABASE_URL="postgresql://build:build@localhost:5432/build" \
 RUN pnpm exec prisma generate
 RUN pnpm build
 
-# ---------- 2b. Prisma Studio (developpement local) ----------
-FROM deps AS studio
-ENV BROWSER=none
-EXPOSE 51212
-CMD ["pnpm", "run", "prisma:studio", "--", "--hostname", "0.0.0.0", "--port", "51212", "--browser", "none"]
-
 # ---------- 3. Execution (c'est la seule etape livree) ----------
 FROM node:22-slim AS runner
 WORKDIR /app
