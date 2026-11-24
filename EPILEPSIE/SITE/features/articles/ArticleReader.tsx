@@ -11,6 +11,24 @@ type ArticleReaderProps = {
   imageAlt: string;
 };
 
+// Mise en forme maison du contenu : le HTML des sites sources est nettoyé (classes et
+// styles supprimés), on le stylise donc ici, avec des couleurs adaptées au mode sombre.
+const CONTENT_CLASSES = [
+  "text-base leading-7 text-zinc-800 dark:text-zinc-200",
+  "[&>*+*]:mt-4",
+  "[&_h2]:mt-8 [&_h2]:text-2xl [&_h2]:font-bold",
+  "[&_h3]:mt-6 [&_h3]:text-xl [&_h3]:font-semibold",
+  "[&_h4]:mt-4 [&_h4]:text-lg [&_h4]:font-semibold",
+  "[&_a]:font-medium [&_a]:text-blue-700 [&_a]:underline dark:[&_a]:text-blue-400",
+  "[&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6 [&_li]:mt-1",
+  "[&_blockquote]:border-l-4 [&_blockquote]:border-zinc-300 [&_blockquote]:pl-4 [&_blockquote]:italic dark:[&_blockquote]:border-zinc-600",
+  "[&_img]:h-auto [&_img]:max-w-full [&_img]:rounded-lg",
+  "[&_figcaption]:mt-2 [&_figcaption]:text-sm [&_figcaption]:text-zinc-600 dark:[&_figcaption]:text-zinc-400",
+  "[&_table]:block [&_table]:overflow-x-auto [&_table]:text-sm",
+  "[&_th]:border [&_th]:border-zinc-300 [&_th]:p-2 [&_td]:border [&_td]:border-zinc-300 [&_td]:p-2 dark:[&_th]:border-zinc-600 dark:[&_td]:border-zinc-600",
+  "[&_hr]:border-zinc-300 dark:[&_hr]:border-zinc-600",
+].join(" ");
+
 export default function ArticleReader({
   title,
   sourceName,
@@ -95,7 +113,7 @@ export default function ArticleReader({
           )}
 
           <div
-            className="space-y-3 text-sm leading-relaxed [&_a]:underline [&_h2]:text-lg [&_h2]:font-semibold [&_h3]:font-semibold [&_img]:h-auto [&_img]:max-w-full [&_li]:ml-5 [&_li]:list-disc"
+            className={CONTENT_CLASSES}
             dangerouslySetInnerHTML={{ __html: contentHtml }}
           />
 

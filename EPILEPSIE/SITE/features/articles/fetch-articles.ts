@@ -9,6 +9,18 @@ import type {
 
 const PER_PAGE = 9;
 const TIMEOUT_MS = 8000;
+const LAYOUT_TAGS = [
+  "div",
+  "section",
+  "article",
+  "aside",
+  "header",
+  "footer",
+  "main",
+  "nav",
+  "address",
+  "hgroup",
+];
 
 // Forme minimale de la réponse de l'API REST WordPress.
 type WpPost = {
@@ -40,17 +52,29 @@ function toPlainText(html: string): string {
 // Le contenu vient d'un site tiers : il est toujours nettoyé avant affichage.
 function cleanContent(html: string): string {
   return sanitizeHtml(html, {
-    allowedTags: sanitizeHtml.defaults.allowedTags.concat([
-      "img",
-      "figure",
-      "figcaption",
-    ]),
+    // Les conteneurs (div, section…) sont retirés mais leur contenu est conservé : le HTML
+    // des constructeurs de pages comme Elementor imbrique le texte dans de nombreux blocs,
+    // ce qui empêche d'espacer correctement les paragraphes.
+    allowedTags: sanitizeHtml.defaults.allowedTags
+      .filter((tag) => !LAYOUT_TAGS.includes(tag))
+      .concat("img"),
     allowedAttributes: {
       a: ["href", "title", "target", "rel"],
       img: ["src", "alt", "width", "height"],
+      "*": ["style"],
+    },
+    // Seul l'alignement du texte est conservé : les couleurs d'origine seraient
+    // illisibles en mode sombre.
+    allowedStyles: {
+      "*": { "text-align": [/^(left|right|center|justify)$/] },
     },
     allowedSchemes: ["https", "mailto"],
     allowedSchemesByTag: { img: ["https"] },
+    // Supprime les paragraphes vides laissés par l'éditeur du site d'origine.
+    exclusiveFilter: (frame) =>
+      /^(p|h[1-6]|li|blockquote)$/.test(frame.tag) &&
+      !frame.text.trim() &&
+      !frame.mediaChildren.length,
     transformTags: {
       a: sanitizeHtml.simpleTransform("a", {
         target: "_blank",
