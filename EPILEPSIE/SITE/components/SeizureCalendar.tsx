@@ -1,65 +1,47 @@
 // components/SeizureCalendar.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { fakeSeizures, type Seizure } from "@/data/fakeSeizures";
-
-// v2 : repart de zéro (l'ancienne clé v1 contenait les données d'exemple mélangées)
-const STORAGE_KEY = "calendrier-crises-v2";
+import { SEIZURE_TYPES, SEIZURE_TRIGGERS } from "@/lib/seizure-options";
+import { addSeizure, deleteSeizure } from "@/app/calendrier/actions";
 
 const MONTHS = [
   "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
   "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre",
 ];
 const DAYS = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
-const TYPES = ["Absence", "Crise focale", "Myoclonie", "Crise tonico-clonique", "Autre"];
-const TRIGGERS = [
-  "Aucun identifié", "Fatigue", "Manque de sommeil", "Stress", "Oubli de traitement", "Autre",
-];
 
 type Props = {
   mode?: "demo" | "personal";
+  initialSeizures?: Seizure[];
+  initialYear?: number;
+  initialMonth?: number;
 };
 
-export default function SeizureCalendar({ mode = "demo" }: Props) {
+export default function SeizureCalendar({
+  mode = "demo",
+  initialSeizures,
+  initialYear = 2026,
+  initialMonth = 10, // 10 = novembre (utilisé par la démo)
+}: Props) {
   const isPersonal = mode === "personal";
 
-  const [seizures, setSeizures] = useState<Seizure[]>(isPersonal ? [] : fakeSeizures);
-  const [loaded, setLoaded] = useState(false);
-  const [year, setYear] = useState(2026);
-  const [month, setMonth] = useState(10); // 10 = novembre
+  const [seizures, setSeizures] = useState<Seizure[]>(
+    isPersonal ? (initialSeizures ?? []) : fakeSeizures
+  );
+  const [year, setYear] = useState(initialYear);
+  const [month, setMonth] = useState(initialMonth);
   const [selected, setSelected] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
 
   // Champs du formulaire
   const [time, setTime] = useState("12:00");
-  const [type, setType] = useState(TYPES[0]);
+  const [type, setType] = useState(SEIZURE_TYPES[0]);
   const [duration, setDuration] = useState("");
-  const [trigger, setTrigger] = useState(TRIGGERS[0]);
-
-  // 1. Mode personnel : on récupère les données sauvegardées et on affiche le mois actuel
-  //    (new Date() est autorisé ici : un useEffect ne s'exécute que dans le navigateur)
-  useEffect(() => {
-    if (!isPersonal) return;
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) setSeizures(JSON.parse(saved));
-    } catch {
-      // localStorage indisponible (navigation privée, etc.) : on reste sur une liste vide
-    }
-    const now = new Date();
-    setYear(now.getFullYear());
-    setMonth(now.getMonth());
-    setLoaded(true);
-  }, [isPersonal]);
-
-  // 2. Mode personnel : on sauvegarde à chaque modification
-  useEffect(() => {
-    if (!isPersonal || !loaded) return; // évite d'écraser les données avant de les avoir lues
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(seizures));
-    } catch {}
-  }, [seizures, loaded, isPersonal]);
+  const [trigger, setTrigger] = useState(SEIZURE_TRIGGERS[0]);
 
   const offset = (new Date(year, month, 1).getDay() + 6) % 7; // lundi = 0
   const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -81,30 +63,53 @@ export default function SeizureCalendar({ mode = "demo" }: Props) {
     setMonth(d.getMonth());
     setSelected(null);
     setShowForm(false);
+    setError("");
   }
 
   function selectDay(key: string) {
     setSelected(key);
     setShowForm(false);
+    setError("");
   }
 
-  function handleAdd() {
-    if (!selected) return;
-    const newSeizure: Seizure = {
-      date: selected,
-      time,
-      type,
-      duration: duration.trim() || "Non précisée",
-      trigger,
-    };
-    setSeizures((prev) => [...prev, newSeizure]);
-    setDuration("");
-    setShowForm(false);
+  async function handleAdd() {
+    if (!selected || saving) return;
+    setSaving(true);
+    setError("");
+
+    const input = { date: selected, time, type, duration, trigger };
+
+    try {
+      if (isPersonal) {
+        const created = await addSeizure(input);
+        setSeizures((prev) => [...prev, created]);
+      } else {
+        setSeizures((prev) => [
+          ...prev,
+          { ...input, duration: duration.trim() || "Non précisée" },
+        ]);
+      }
+      setDuration("");
+      setShowForm(false);
+    } catch {
+      setError("Impossible d'enregistrer la crise. Réessaie.");
+    } finally {
+      setSaving(false);
+    }
   }
 
-  function handleDelete(target: Seizure) {
+  async function handleDelete(target: Seizure) {
     if (!confirm("Supprimer cette crise ?")) return;
-    setSeizures((prev) => prev.filter((s) => s !== target));
+    setError("");
+
+    try {
+      if (isPersonal && target.id) {
+        await deleteSeizure(target.id);
+      }
+      setSeizures((prev) => prev.filter((s) => s !== target));
+    } catch {
+      setError("Impossible de supprimer la crise. Réessaie.");
+    }
   }
 
   const selectedSeizures = selected ? seizuresOn(selected) : [];
@@ -160,7 +165,7 @@ export default function SeizureCalendar({ mode = "demo" }: Props) {
           {selectedSeizures.length === 0 && <p>Aucune crise notée ce jour-là.</p>}
 
           {selectedSeizures.map((s, i) => (
-            <div key={i} className="flex items-start justify-between rounded border p-2">
+            <div key={s.id ?? i} className="flex items-start justify-between rounded border p-2">
               <div>
                 <p className="font-medium">{s.type} à {s.time}</p>
                 <p className="text-gray-500">
@@ -176,6 +181,8 @@ export default function SeizureCalendar({ mode = "demo" }: Props) {
               </button>
             </div>
           ))}
+
+          {error && <p role="alert" className="text-red-600">{error}</p>}
 
           {!showForm ? (
             <button
@@ -203,7 +210,7 @@ export default function SeizureCalendar({ mode = "demo" }: Props) {
                   onChange={(e) => setType(e.target.value)}
                   className="w-full rounded border bg-transparent p-2"
                 >
-                  {TYPES.map((t) => (
+                  {SEIZURE_TYPES.map((t) => (
                     <option key={t} value={t} className="text-black">{t}</option>
                   ))}
                 </select>
@@ -213,6 +220,7 @@ export default function SeizureCalendar({ mode = "demo" }: Props) {
                 <span className="mb-1 block">Durée (ex. 30 s, 2 min)</span>
                 <input
                   type="text"
+                  maxLength={50}
                   value={duration}
                   onChange={(e) => setDuration(e.target.value)}
                   className="w-full rounded border bg-transparent p-2"
@@ -226,7 +234,7 @@ export default function SeizureCalendar({ mode = "demo" }: Props) {
                   onChange={(e) => setTrigger(e.target.value)}
                   className="w-full rounded border bg-transparent p-2"
                 >
-                  {TRIGGERS.map((t) => (
+                  {SEIZURE_TRIGGERS.map((t) => (
                     <option key={t} value={t} className="text-black">{t}</option>
                   ))}
                 </select>
@@ -235,9 +243,10 @@ export default function SeizureCalendar({ mode = "demo" }: Props) {
               <div className="flex gap-2">
                 <button
                   onClick={handleAdd}
-                  className="flex-1 rounded bg-blue-600 py-2 text-white hover:bg-blue-700"
+                  disabled={saving}
+                  className="flex-1 rounded bg-blue-600 py-2 text-white hover:bg-blue-700 disabled:opacity-50"
                 >
-                  Enregistrer
+                  {saving ? "Enregistrement…" : "Enregistrer"}
                 </button>
                 <button
                   onClick={() => setShowForm(false)}
@@ -253,7 +262,7 @@ export default function SeizureCalendar({ mode = "demo" }: Props) {
 
       <p className="mt-4 text-xs text-gray-500">
         {isPersonal
-          ? "Tes données sont enregistrées uniquement dans ce navigateur, sur cet appareil."
+          ? "Tes crises sont enregistrées dans ton compte."
           : "Exemple : ces données sont fictives et ne sont pas enregistrées."}
       </p>
     </div>
