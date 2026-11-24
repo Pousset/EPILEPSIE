@@ -1,73 +1,202 @@
-# Site de suivi des crises d'épilepsie
+# Instructions Claude — Calendrier Épilepsie
 
-## Présentation
-Site Next.js (App Router, TypeScript, Tailwind) pour les personnes épileptiques.
-Fonction principale : un calendrier pour noter ses crises.
+## Contexte du projet
 
-- Accueil : calendrier d'exemple avec de fausses données.
-- Un visiteur non inscrit peut utiliser le calendrier, ses données restent dans son navigateur (localStorage).
-- Plus tard : inscription/connexion pour enregistrer les données en base et les retrouver sur d'autres appareils.
-- Idée à terme : export PDF/CSV pour le médecin.
+Application Next.js de suivi des crises d'épilepsie. L'application propose un calendrier de démonstration public, une authentification par email et mot de passe, un calendrier personnel protégé, l'enregistrement des crises et un export PDF.
 
-## Commandes
-- `npm run dev` : serveur de développement
-- `npm run build` : build de production (à lancer avant un déploiement)
-- `npm run lint` : vérification ESLint
+Les données peuvent être des données de santé sensibles. Toute modification doit privilégier la confidentialité, la séparation des utilisateurs et la validation côté serveur.
 
-## Structure
-- `app/layout.tsx` : Navbar + `<main className="flex-1">` + Footer, body en `flex min-h-screen flex-col`
-- `app/page.tsx` : accueil (hero + calendrier)
-- `app/about/`, `app/contact/` : pages principales
-- `components/Navbar.tsx`, `components/Footer.tsx`
-- `components/SeizureCalendar.tsx` : calendrier (Client Component)
-- `data/fakeSeizures.ts` : type `Seizure` et données d'exemple
+## Stack et commandes
 
-## Modèle de données
-```ts
-type Seizure = {
-  date: string;     // AAAA-MM-JJ
-  time: string;     // HH:MM
-  type: string;     // Absence, Crise focale, Myoclonie, Crise tonico-clonique, Autre
-  duration: string; // texte libre (ex. "30 s", "2 min")
-  trigger: string;  // Fatigue, Stress, Manque de sommeil, Oubli de traitement, etc.
-};
+- Next.js 16 avec App Router, React 19 et TypeScript.
+- Tailwind CSS pour les styles.
+- Better Auth pour l'authentification.
+- Prisma 7 avec PostgreSQL Neon.
+- pnpm est le gestionnaire de paquets de référence.
+
+Commandes principales :
+
+```bash
+pnpm install
+pnpm dev
+pnpm lint
+pnpm build
+pnpm start
 ```
 
-## Conventions
-- Langue : interface, commentaires et messages de commit en français.
-- Commits : `feat:`, `fix:`, `style:`, `refactor:`, un commit par étape logique.
-- Composants Server par défaut ; `"use client"` seulement si état, effets ou événements.
-- Alias d'import : `@/` (ex. `@/components/Navbar`).
-- Pas de balise `<form>` dans les composants React : utiliser `onClick`/`onChange`.
-- Tailwind pour le style ; les `<option>` des `<select>` ont `text-black` pour rester lisibles en mode sombre.
-- Windows / PowerShell : proposer des commandes PowerShell (`New-Item`, `mkdir`).
+Commandes Prisma :
 
-## Pièges connus
-- Ne pas utiliser `new Date()` sans argument dans un composant rendu côté serveur ou prérendu : Next.js lève l'erreur "unstable value `new Date()` while prerendering". Pour l'année du footer, la valeur est calculée dans une fonction `"use cache"`. Dans le calendrier, le mois initial est fixe (novembre 2026).
-- Ne jamais lire `localStorage` pendant le rendu : lire dans un `useEffect` au montage, avec un drapeau `loaded` pour ne pas écraser les données sauvegardées au premier rendu (clé : `calendrier-crises-v1`).
+```bash
+pnpm exec prisma generate
+pnpm exec prisma validate
+pnpm exec prisma format
+pnpm exec prisma migrate dev --name description_du_changement
+pnpm exec prisma migrate deploy
+pnpm exec prisma migrate status
+pnpm run prisma:studio
+```
 
-## Accessibilité et public concerné
-- Public photosensible : aucune animation clignotante ou très flashy, transitions douces uniquement.
-- Ne jamais transmettre une information par la couleur seule (ex. jour avec crise : fond rouge + symbole ●).
-- Contrastes suffisants en mode clair et sombre ; `aria-label` sur les boutons sans texte.
+Avant de considérer une modification terminée, lancer au minimum `pnpm lint` et `pnpm build` lorsque l'environnement le permet.
 
-## Données de santé
-Ce sont des données sensibles (RGPD).
-- Ne jamais commiter de `.env` ni d'identifiants.
-- Mots de passe hashés, HTTPS, possibilité de supprimer son compte et ses données.
-- HDS à étudier avant un service public avec de vraies données.
-- Prévenir l'utilisateur que le localStorage est lisible par les autres utilisateurs d'un ordinateur partagé.
+## Structure du projet
 
-## Feuille de route
-1. Suppression d'une crise (bouton "Supprimer" + `confirm()`), si pas encore fait.
-2. Séparer la démo de l'accueil (fausses données, sans sauvegarde) d'une page `/calendrier` qui démarre vide et utilise le localStorage.
-3. Base de données + ORM (idée : Prisma + PostgreSQL via Neon ou Supabase).
-4. Authentification (Auth.js ou Better Auth, email + mot de passe), pages `/inscription` et `/connexion`.
-5. Page `/calendrier` privée branchée sur la base, avec import des données du localStorage à l'inscription.
-6. Export PDF/CSV pour le médecin.
-7. Déploiement sur Vercel.
+```text
+app/                         # Routes Next.js et App Router
+├─ page.tsx                  # Accueil et calendrier de démonstration
+├─ layout.tsx                # Layout global
+├─ calendrier/page.tsx       # Calendrier personnel protégé
+├─ connexion/page.tsx        # Connexion
+├─ inscription/page.tsx      # Inscription
+├─ about/page.tsx
+├─ contact/page.tsx
+└─ api/auth/[...all]/        # Route Better Auth
 
-## Façon de travailler
-- Avancer par petites étapes, donner le code complet des fichiers modifiés.
-- Proposer un nom de commit à la fin de chaque étape.
-- Expliquer brièvement le « pourquoi » des choix techniques.
+features/                    # Fonctionnalités métier autonomes
+├─ auth/                     # Better Auth, formulaires et session
+└─ calendar/                 # Calendrier, actions, types et export PDF
+
+components/                  # Composants d'interface partagés
+└─ layout/                   # Navbar et Footer
+
+lib/                         # Infrastructure partagée
+└─ prisma.ts                 # Client Prisma avec adaptateur Neon
+
+prisma/                      # Schéma et migrations PostgreSQL
+├─ schema.prisma
+└─ migrations/
+
+app/generated/prisma/        # Client Prisma généré, ignoré par Git
+```
+
+## Où placer le code
+
+- Une route, un layout ou un fichier propre à l'App Router va dans `app/`.
+- Une logique métier liée à l'authentification ou au calendrier va dans la feature correspondante sous `features/`.
+- Un composant visuel réellement partagé va dans `components/`.
+- Un client technique ou un utilitaire d'infrastructure partagé va dans `lib/`.
+- Un modèle de données ou une évolution de base va dans `prisma/`.
+
+Ne pas déplacer la logique métier vers `lib/` simplement parce qu'elle est réutilisée par deux fichiers. Elle doit rester dans sa feature tant qu'elle concerne le domaine Auth ou Calendar.
+
+Documentation à consulter avant une modification importante :
+
+- `README.md` à la racine pour la vue d'ensemble ;
+- `docs/` pour la copie centralisée de la documentation du projet ;
+- `app/README.md` pour les routes ;
+- `features/README.md` pour l'organisation métier ;
+- `features/auth/README.md` pour l'authentification ;
+- `features/calendar/README.md` pour le calendrier ;
+- `components/README.md` pour les composants partagés ;
+- `lib/README.md` pour Prisma ;
+- `prisma/README.md` pour le schéma et les migrations.
+
+## Conventions TypeScript et Next.js
+
+- Utiliser l'alias `@/` pour les imports internes.
+- Les composants sont des Server Components par défaut.
+- Ajouter `"use client"` uniquement pour les hooks, l'état, les événements navigateur ou les API navigateur.
+- Ne jamais importer Prisma, `auth` serveur ou des secrets dans un Client Component.
+- Garder les accès aux données personnelles côté serveur.
+- Utiliser des types explicites pour les données échangées entre serveur et client.
+- Préserver l'accessibilité : labels associés aux champs, `aria-label` pour les boutons sans texte et informations non transmises par la couleur seule.
+- Interface, commentaires et messages utilisateur en français.
+
+## Authentification
+
+- La configuration serveur Better Auth est dans `features/auth/auth.ts`.
+- Le client navigateur est dans `features/auth/auth-client.ts`.
+- Le point d'entrée HTTP est `app/api/auth/[...all]/route.ts`.
+- Les pages publiques sont `/connexion` et `/inscription`.
+- `/calendrier` doit toujours vérifier la session côté serveur avant de lire la base.
+- Ne jamais accepter un `userId` fourni par le navigateur pour autoriser une lecture ou une écriture.
+- Après une modification d'authentification, tester la connexion, la déconnexion, la redirection et l'accès à `/calendrier`.
+
+## Base de données et Prisma
+
+- Le schéma est dans `prisma/schema.prisma`.
+- Les migrations sont versionnées dans `prisma/migrations/`.
+- Le client est généré dans `app/generated/prisma/`.
+- L'instance partagée est exposée par `lib/prisma.ts`.
+- `DATABASE_URL` est utilisée par l'application avec l'adaptateur Neon.
+- `DATABASE_URL_UNPOOLED` est utilisée par la configuration Prisma pour les migrations et Prisma Studio.
+- Ne jamais modifier manuellement `app/generated/prisma/`.
+- Après une modification du schéma, exécuter `prisma format`, `prisma validate`, créer une migration et régénérer le client.
+- Vérifier les migrations générées avant de les commiter.
+
+Les commandes destructives comme `prisma migrate reset`, `prisma db push --force-reset` ou `prisma db push --accept-data-loss` nécessitent une confirmation explicite immédiate de l'utilisateur. Ne jamais les lancer par défaut.
+
+## Données de santé et sécurité
+
+- Ne jamais commiter `.env`, des mots de passe, des tokens ou des URLs de base contenant des secrets.
+- Ne pas journaliser les mots de passe, secrets ou données médicales détaillées.
+- Toute requête de crise doit être filtrée par l'utilisateur connecté.
+- Vérifier et limiter les entrées reçues par les Server Actions.
+- Conserver les relations et les suppressions en cascade cohérentes avec Better Auth.
+- Ne pas présenter l'application comme un dispositif médical.
+- Avant un usage public avec de vraies données, étudier le RGPD, l'hébergement HDS, les sauvegardes, la suppression de compte et la rétention des données.
+
+## Calendrier
+
+- Le mode `demo` utilise les données de `features/calendar/demo-data.ts` et ne persiste pas les modifications.
+- Le mode `personal` reçoit les crises depuis le serveur et utilise les Server Actions de `features/calendar/actions.ts`.
+- Le type partagé `Seizure` est dans `features/calendar/types.ts`.
+- Les options de formulaire sont dans `features/calendar/options.ts`.
+- L'export PDF est dans `features/calendar/export-pdf.ts`.
+- Ne pas réintroduire de dépendance entre le type `Seizure` et les données de démonstration.
+- Éviter les valeurs temporelles instables dans du contenu pré-rendu ; définir explicitement les valeurs initiales lorsque le rendu doit être déterministe.
+
+## Docker et déploiement
+
+- `Dockerfile` et `compose.yaml` restent à la racine.
+- Le Dockerfile utilise un build multi-stage et `output: "standalone"`.
+- Le contexte Docker doit inclure `package.json`, le lockfile, `prisma/` et la configuration Prisma.
+- Ne jamais inclure `.env` dans l'image ou le contexte Docker.
+- Tester avec `docker compose up --build` si la modification concerne le build ou le déploiement.
+
+## Fichiers générés et configuration locale
+
+- `.next/` est généré par Next.js et ignoré par Git. Ne pas le modifier manuellement.
+- `app/generated/prisma/` est généré par Prisma et ignoré par Git.
+- `.agents/` contient la documentation destinée aux assistants IA et est versionné.
+- `hello.ts` et `neon.ts` sont des fichiers de configuration/exemple Neon, indépendants du rendu Next.js principal.
+- Préserver les changements existants non liés à la tâche.
+
+## Workflow de modification
+
+1. Lire le README concerné et les fichiers appelants.
+2. Vérifier l'état Git avant de modifier des fichiers.
+3. Faire la modification la plus ciblée possible.
+4. Mettre à jour la documentation si l'architecture ou une commande change.
+5. Vérifier les diagnostics TypeScript/éditeur lorsque disponibles.
+6. Lancer les validations adaptées : `pnpm lint`, `pnpm build` et les commandes Prisma nécessaires.
+7. Résumer les fichiers modifiés, les vérifications exécutées et les éventuels points restant à traiter.
+8. Donner systématiquement un nom de commit bien décrit, en français, qui résume précisément l'objectif de la modification.
+
+## Commits
+
+Utiliser les préfixes suivants :
+
+- `feat:` pour une fonctionnalité ;
+- `fix:` pour une correction ;
+- `refactor:` pour une réorganisation sans changement fonctionnel ;
+- `docs:` pour la documentation ;
+- `style:` pour le formatage ou les styles.
+
+Chaque réponse qui termine une étape de travail doit proposer un nom de commit. Le message doit être spécifique, compréhensible sans relire la conversation et décrire le résultat principal, pas seulement le type de fichier modifié.
+
+Éviter les messages vagues comme `docs: mise à jour` ou `fix: changements`. Préférer un message qui précise le périmètre et l'intention.
+
+Exemples :
+
+```text
+docs: centraliser la documentation de l'architecture du site
+feat: protéger le calendrier personnel par la session utilisateur
+fix: filtrer les suppressions de crises par utilisateur connecté
+refactor: déplacer la logique du calendrier dans sa feature dédiée
+```
+
+Pour les ajouts de documentation et la réorganisation documentaire réalisées dans ce projet, le commit recommandé est :
+
+```text
+docs: centraliser et documenter l'architecture du site
+```
