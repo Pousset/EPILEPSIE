@@ -11,7 +11,8 @@ un lien vers l'URL d'origine.
 | [`sources.ts`](./sources.ts) | Liste des sites sources (nom et URL de base). |
 | [`types.ts`](./types.ts) | Types `Article`, `ArticleSource` et `ArticlesResult`. |
 | [`fetch-articles.ts`](./fetch-articles.ts) | Appelle l'API REST WordPress de chaque source, nettoie le HTML et fusionne les résultats. |
-| [`ArticleCard.tsx`](./ArticleCard.tsx) | Carte d'un article : image, extrait, contenu repliable, lien vers l'original. |
+| [`ArticleCard.tsx`](./ArticleCard.tsx) | Carte d'un article : image, extrait, bouton de lecture, lien vers l'original. |
+| [`ArticleReader.tsx`](./ArticleReader.tsx) | Client Component : fenêtre modale (`<dialog>`) affichant l'article complet, fermée par la croix, Échap ou un clic en dehors. |
 
 ## Fonctionnement
 

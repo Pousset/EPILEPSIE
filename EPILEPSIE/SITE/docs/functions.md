@@ -7,6 +7,7 @@ Ce document recense les fonctions nommées et les handlers principaux du dossier
 | Domaine | Emplacement | Responsabilité |
 | --- | --- | --- |
 | Routes | [`app/`](../app/) | Rend les pages et compose les layouts Next.js. |
+| Articles | [`features/articles/`](../features/articles/) | Récupère, nettoie et affiche les articles de prévention depuis les API WordPress configurées. |
 | Authentification | [`features/auth/`](../features/auth/) | Crée les clients Better Auth et gère les formulaires/session. |
 | Calendrier | [`features/calendar/`](../features/calendar/) | Affiche, valide, ajoute, supprime et exporte les crises. |
 | Interface partagée | [`components/layout/`](../components/layout/) | Navigation et pied de page. |
@@ -47,6 +48,14 @@ Les constantes `geistSans`, `geistMono` et `metadata` configurent respectivement
 
 `PersonalCalendar` doit toujours filtrer les requêtes Prisma avec `session.user.id`.
 
+### `app/articles/page.tsx`
+
+| Fonction | Ligne | Exécution | Rôle |
+| --- | ---: | --- | --- |
+| [`ArticlesPage`](../app/articles/page.tsx:8) | 8 | Serveur | Charge les articles disponibles et affiche la page `/articles`. |
+
+La page définit également ses métadonnées et délègue la récupération des données à `fetchArticles`.
+
 ### `app/api/auth/[...all]/route.ts`
 
 | Handler | Rôle |
@@ -55,6 +64,41 @@ Les constantes `geistSans`, `geistMono` et `metadata` configurent respectivement
 | `POST` | Handler Better Auth généré pour les requêtes HTTP POST. |
 
 Les deux handlers sont produits par `toNextJsHandler(auth)` et ne doivent pas être réimplémentés manuellement.
+
+## Articles
+
+### `features/articles/fetch-articles.ts`
+
+| Fonction | Ligne | Exécution | Rôle |
+| --- | ---: | --- | --- |
+| `toPlainText` | 27 | Serveur | Convertit le contenu HTML d'un article en texte brut pour l'extrait. |
+| `cleanContent` | 41 | Serveur | Nettoie le HTML distant avec `sanitize-html` et conserve uniquement les images HTTPS autorisées. |
+| `toArticle` | 63 | Serveur | Transforme une réponse WordPress en objet `Article` utilisé par l'interface. |
+| `fetchFromSource` | 83 | Serveur | Récupère les articles d'une source WordPress avec timeout et vérification de réponse HTTP. |
+| [`fetchArticles`](../features/articles/fetch-articles.ts:107) | 107 | Serveur | Interroge les sources configurées en parallèle, applique un cache d'une heure, tolère les échecs partiels et trie les résultats. |
+
+### `features/articles/ArticleCard.tsx`
+
+| Fonction | Ligne | Rôle |
+| --- | ---: | --- |
+| `formatDate` | 4 | Formate la date de publication selon la locale française. |
+| [`ArticleCard`](../features/articles/ArticleCard.tsx:12) | 12 | Affiche la carte d'un article avec sa source, sa date, son image et son lien de lecture. |
+
+### `features/articles/ArticleReader.tsx`
+
+| Fonction | Ligne | Rôle |
+| --- | ---: | --- |
+| [`ArticleReader`](../features/articles/ArticleReader.tsx:14) | 14 | Affiche le contenu HTML nettoyé d'un article dans une vue de lecture. |
+| `open` | 31 | Ouvre la boîte de dialogue native et bloque le défilement de la page. |
+| `close` | 36 | Ferme la boîte de dialogue native de lecture. |
+
+### `features/articles/sources.ts`
+
+| Export | Rôle |
+| --- | --- |
+| `ARTICLE_SOURCES` | Liste les sources WordPress utilisées pour les articles d'information sur l'épilepsie. |
+
+Les types `ArticleSourceId`, `ArticleSource`, `Article` et `ArticlesResult` sont définis dans `features/articles/types.ts`.
 
 ## Authentification
 

@@ -171,6 +171,10 @@ Documentation détaillée :
 - [`prisma/README.md`](./prisma/README.md) — schéma et migrations ;
 - [`.agents/README.md`](./.agents/README.md) — documentation destinée aux assistants IA.
 
+## Feature articles
+
+La feature [`features/articles/`](../features/articles/) expose la page [`app/articles/page.tsx`](../app/articles/page.tsx). Elle récupère des articles depuis les API WordPress configurées, nettoie leur contenu distant avec `sanitize-html`, applique un cache d'une heure et tolère les indisponibilités partielles des sources.
+
 ## Flux applicatifs
 
 ### Visiteur
