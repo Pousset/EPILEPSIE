@@ -1,6 +1,6 @@
 // app/page.tsx
-import SeizureCalendar from "@/components/SeizureCalendar";
-import StartCalendarButton from "@/components/StartCalendarButton";
+import SeizureCalendar from "@/features/calendar/SeizureCalendar";
+import StartCalendarButton from "@/features/auth/StartCalendarButton";
 
 export default function HomePage() {
   return (

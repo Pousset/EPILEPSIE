@@ -1,5 +1,5 @@
 // app/connexion/page.tsx
-import AuthForm from "@/components/AuthForm";
+import AuthForm from "@/features/auth/AuthForm";
 
 export default function ConnexionPage() {
   return (

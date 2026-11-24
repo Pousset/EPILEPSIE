@@ -42,3 +42,4 @@ next-env.d.ts
 .neon
 
 /app/generated/prisma
+!.env.example

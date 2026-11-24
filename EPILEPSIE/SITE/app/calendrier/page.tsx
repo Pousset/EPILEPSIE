@@ -2,9 +2,9 @@
 import { Suspense } from "react";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
+import { auth } from "@/features/auth/auth";
 import { prisma } from "@/lib/prisma";
-import SeizureCalendar from "@/components/SeizureCalendar";
+import SeizureCalendar from "@/features/calendar/SeizureCalendar";
 
 async function PersonalCalendar() {
   const session = await auth.api.getSession({ headers: await headers() });

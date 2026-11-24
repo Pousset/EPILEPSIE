@@ -1,5 +1,5 @@
 // app/inscription/page.tsx
-import AuthForm from "@/components/AuthForm";
+import AuthForm from "@/features/auth/AuthForm";
 
 export default function InscriptionPage() {
   return (
