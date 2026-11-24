@@ -22,6 +22,7 @@ export default function Navbar() {
       <ul className="flex items-center gap-6">
         <li><Link href="/">Accueil</Link></li>
         {session && <li><Link href="/calendrier">Mon calendrier</Link></li>}
+        <li><Link href="/articles">Articles</Link></li>
         <li><Link href="/about">À propos</Link></li>
         <li><Link href="/contact">Contact</Link></li>
 
