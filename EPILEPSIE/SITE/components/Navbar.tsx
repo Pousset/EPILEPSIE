@@ -2,22 +2,15 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 
 export default function Navbar() {
-  const router = useRouter();
   const { data: session, isPending } = authClient.useSession();
 
   async function handleSignOut() {
-    await authClient.signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          router.push("/");
-          router.refresh();
-        },
-      },
-    });
+    await authClient.signOut();
+    // Navigation complète : vide le cache et l'état de l'utilisateur précédent
+    window.location.assign("/");
   }
 
   return (
@@ -55,7 +48,7 @@ export default function Navbar() {
                 href="/inscription"
                 className="rounded bg-blue-600 px-3 py-1 text-sm text-white hover:bg-blue-700"
               >
-                inscription
+                inscrire
               </Link>
             </li>
           </>

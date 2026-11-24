@@ -2,12 +2,10 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 
 export default function AuthForm({ mode }: { mode: "signin" | "signup" }) {
-  const router = useRouter();
   const isSignup = mode === "signup";
 
   const [name, setName] = useState("");
@@ -25,15 +23,14 @@ export default function AuthForm({ mode }: { mode: "signin" | "signup" }) {
       ? await authClient.signUp.email({ name, email, password })
       : await authClient.signIn.email({ email, password });
 
-    setLoading(false);
-
     if (result.error) {
+      setLoading(false);
       setError(result.error.message ?? "Une erreur est survenue.");
       return;
     }
 
-    router.push("/calendrier");
-    router.refresh();
+    // Navigation complète : vide le cache du navigateur et l'état de l'utilisateur précédent
+    window.location.assign("/calendrier");
   }
 
   return (

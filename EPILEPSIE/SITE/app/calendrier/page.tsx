@@ -19,13 +19,14 @@ async function PersonalCalendar() {
   const now = new Date();
 
   return (
-    <SeizureCalendar
-      mode="personal"
-      initialSeizures={seizures}
-      initialYear={now.getFullYear()}
-      initialMonth={now.getMonth()}
-    />
-  );
+  <SeizureCalendar
+    key={session.user.id}
+    mode="personal"
+    initialSeizures={seizures}
+    initialYear={now.getFullYear()}
+    initialMonth={now.getMonth()}
+  />
+);
 }
 
 export default function CalendrierPage() {
