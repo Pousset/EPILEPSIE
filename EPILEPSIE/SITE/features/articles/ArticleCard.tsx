@@ -1,3 +1,4 @@
+import ArticleReader from "@/features/articles/ArticleReader";
 import type { Article } from "@/features/articles/types";
 
 function formatDate(iso: string): string {
@@ -36,15 +37,14 @@ export default function ArticleCard({ article }: { article: Article }) {
         )}
 
         {article.contentHtml && (
-          <details className="text-sm">
-            <summary className="cursor-pointer font-medium underline">
-              Lire le contenu ici
-            </summary>
-            <div
-              className="mt-3 space-y-3 [&_a]:underline [&_img]:h-auto [&_img]:max-w-full"
-              dangerouslySetInnerHTML={{ __html: article.contentHtml }}
-            />
-          </details>
+          <ArticleReader
+            title={article.title}
+            sourceName={article.sourceName}
+            contentHtml={article.contentHtml}
+            url={article.url}
+            imageUrl={article.imageUrl}
+            imageAlt={article.imageAlt}
+          />
         )}
 
         <a
