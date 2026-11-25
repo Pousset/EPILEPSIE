@@ -41,3 +41,8 @@ export async function createAccountAndSignIn(page: Page, name: string, email: st
 // (?!\d) exclut "10", "11", etc.
 export const firstDay = (page: Page) =>
   page.locator("button").filter({ hasText: /^\s*1(?!\d)/ });
+
+
+// Message d'erreur de l'application. Next.js ajoute son propre role="alert" (vide) pour
+// annoncer les changements de page : on ne retient que les alertes qui contiennent du texte.
+export const appAlert = (page: Page) => page.getByRole("alert").filter({ hasText: /\S/ });

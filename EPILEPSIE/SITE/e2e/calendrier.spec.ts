@@ -40,6 +40,9 @@ test("une crise modifiée puis supprimée disparaît bien de la base", async ({ 
 });
 
 test("le compte B ne voit jamais les crises du compte A", async ({ browser }) => {
+  // Deux inscriptions complètes dans deux navigateurs : plus long qu'un test à un seul compte
+  test.setTimeout(120_000);
+
   const contextA = await browser.newContext();
   const contextB = await browser.newContext();
   const pageA = await contextA.newPage();
@@ -66,7 +69,8 @@ test("le compte B ne voit jamais les crises du compte A", async ({ browser }) =>
     await pageA.reload();
     await expect(pageA.getByText("1 crise ce mois-ci")).toBeVisible();
   } finally {
-    await contextA.close();
-    await contextB.close();
+    // Si le test a expiré, Playwright a déjà fermé les contextes : on ignore cette erreur
+    await contextA.close().catch(() => undefined);
+    await contextB.close().catch(() => undefined);
   }
 });
