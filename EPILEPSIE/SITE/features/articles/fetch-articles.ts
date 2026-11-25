@@ -36,7 +36,7 @@ type WpPost = {
   };
 };
 
-function toPlainText(html: string): string {
+export function toPlainText(html: string): string {
   const text = sanitizeHtml(html, { allowedTags: [], allowedAttributes: {} });
   // sanitize-html ré-encode ces caractères : on les remet en clair pour React.
   return text
@@ -50,7 +50,7 @@ function toPlainText(html: string): string {
 }
 
 // Le contenu vient d'un site tiers : il est toujours nettoyé avant affichage.
-function cleanContent(html: string): string {
+export function cleanContent(html: string): string {
   return sanitizeHtml(html, {
     // Les conteneurs (div, section…) sont retirés mais leur contenu est conservé : le HTML
     // des constructeurs de pages comme Elementor imbrique le texte dans de nombreux blocs,
@@ -84,7 +84,7 @@ function cleanContent(html: string): string {
   });
 }
 
-function toArticle(post: WpPost, source: ArticleSource): Article {
+export function toArticle(post: WpPost, source: ArticleSource): Article {
   const media = post._embedded?.["wp:featuredmedia"]?.[0];
   const title = toPlainText(post.title.rendered);
 

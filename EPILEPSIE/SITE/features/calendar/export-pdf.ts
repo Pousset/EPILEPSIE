@@ -12,7 +12,7 @@ export function dateKey(d: Date) {
   ).padStart(2, "0")}`;
 }
 
-function countBy(list: Seizure[], key: "type" | "trigger") {
+export function countBy(list: Seizure[], key: "type" | "trigger") {
   const map = new Map<string, number>();
   for (const s of list) map.set(s[key], (map.get(s[key]) ?? 0) + 1);
   return [...map.entries()].sort((a, b) => b[1] - a[1]);
