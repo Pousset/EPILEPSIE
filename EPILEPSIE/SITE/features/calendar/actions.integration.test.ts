@@ -7,7 +7,7 @@ vi.mock("@/features/auth/auth", () => ({
 
 import { auth } from "@/features/auth/auth";
 import { prisma } from "@/lib/prisma";
-import { addSeizure, deleteSeizure } from "@/features/calendar/actions";
+import { addSeizure, deleteSeizure, updateSeizure } from "@/features/calendar/actions";
 
 const getSession = vi.mocked(auth.api.getSession);
 const connectedAs = (id: string) =>
@@ -73,5 +73,57 @@ describe("isolation des crises entre utilisateurs", () => {
 
     const row = await prisma.seizure.findUnique({ where: { id } });
     expect(row?.userId).toBe("test-user-a");
+  });
+});
+
+describe("modification des crises", () => {
+  it("l'utilisateur B ne peut pas modifier la crise de A", async () => {
+    const id = await createSeizureAs("test-user-a");
+
+    connectedAs("test-user-b");
+    await expect(updateSeizure(id, { ...input, type: "Myoclonie" })).rejects.toThrow();
+
+    const row = await prisma.seizure.findUnique({ where: { id } });
+    expect(row?.type).toBe("Absence");
+    expect(row?.userId).toBe("test-user-a");
+  });
+
+  it("l'utilisateur A peut modifier sa propre crise", async () => {
+    const id = await createSeizureAs("test-user-a");
+
+    const updated = await updateSeizure(id, { ...input, type: "Myoclonie", duration: "45 s" });
+
+    expect(updated.type).toBe("Myoclonie");
+    const row = await prisma.seizure.findUnique({ where: { id } });
+    expect(row?.type).toBe("Myoclonie");
+    expect(row?.duration).toBe("45 s");
+    expect(row?.userId).toBe("test-user-a");
+  });
+
+  it("un userId injecté ne transfère pas la crise à un autre utilisateur", async () => {
+    const id = await createSeizureAs("test-user-a");
+
+    await updateSeizure(id, { ...input, userId: "test-user-b" } as never);
+
+    const row = await prisma.seizure.findUnique({ where: { id } });
+    expect(row?.userId).toBe("test-user-a");
+  });
+
+  it("une modification invalide laisse la crise intacte", async () => {
+    const id = await createSeizureAs("test-user-a");
+
+    await expect(updateSeizure(id, { ...input, time: "25:00" })).rejects.toThrow("Heure invalide");
+
+    const row = await prisma.seizure.findUnique({ where: { id } });
+    expect(row?.time).toBe("08:30");
+  });
+
+  it("normalise la durée vide en « Non précisée »", async () => {
+    const id = await createSeizureAs("test-user-a");
+
+    await updateSeizure(id, { ...input, duration: "   " });
+
+    const row = await prisma.seizure.findUnique({ where: { id } });
+    expect(row?.duration).toBe("Non précisée");
   });
 });
