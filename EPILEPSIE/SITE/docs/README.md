@@ -7,20 +7,21 @@ Ce dossier regroupe les copies centralisées de la documentation du projet Calen
 | Document | Contenu |
 | --- | --- |
 | [`site.md`](./site.md) | Documentation globale du site : installation, architecture, sécurité, Docker et déploiement. |
+| [`ARCHITECTURE.md`](./ARCHITECTURE.md) | Architecture technique, couches et flux. |
+| [`DATABASE.md`](./DATABASE.md) | Base de données, modèles et migrations. |
+| [`API.md`](./API.md) | Routes, Server Actions et échanges de données. |
+| [`CONVENTIONS.md`](./CONVENTIONS.md) | Conventions de code, de sécurité et de contribution. |
 | [`app.md`](./app.md) | Routes et organisation de l'App Router Next.js. |
 | [`features.md`](./features.md) | Organisation des fonctionnalités métier. |
 | [`auth.md`](./auth.md) | Authentification Better Auth et gestion des sessions. |
-| [`calendar.md`](./calendar.md) | Calendrier, Server Actions, données de crise et export PDF. |
-| [`components.md`](./components.md) | Composants d'interface réutilisables. |
+| [`calendar.md`](./calendar.md) | Calendrier, Server Actions (ajout, modification, suppression), données de crise et export PDF. |
+| [`articles.md`](./articles.md) | Page d'articles : sources WordPress, nettoyage du HTML et fenêtre de lecture. |
+| [`components.md`](./components.md) | Composants d'interface réutilisables (layout et `Dialog`). |
 | [`lib.md`](./lib.md) | Infrastructure partagée et client Prisma. |
 | [`prisma.md`](./prisma.md) | Schéma PostgreSQL, migrations et génération Prisma. |
 | [`agents.md`](./agents.md) | Skills et instructions destinés aux assistants IA. |
 | [`next.md`](./next.md) | Dossier `.next` généré par Next.js. |
 | [`functions.md`](./functions.md) | Référence des fonctions et handlers du site. |
-| [`ARCHITECTURE.md`](./ARCHITECTURE.md) | Organisation technique et flux entre les couches. |
-| [`DATABASE.md`](./DATABASE.md) | Modèles, migrations et règles d'accès à la base. |
-| [`API.md`](./API.md) | Routes Better Auth, Server Actions et échanges de données. |
-| [`CONVENTIONS.md`](./CONVENTIONS.md) | Conventions de code, sécurité, documentation et commits. |
 
 ## Documentation canonique
 
@@ -31,6 +32,7 @@ Les fichiers présents dans les dossiers du projet restent les références loca
 - [`../features/README.md`](../features/README.md)
 - [`../features/auth/README.md`](../features/auth/README.md)
 - [`../features/calendar/README.md`](../features/calendar/README.md)
+- [`../features/articles/README.md`](../features/articles/README.md)
 - [`../components/README.md`](../components/README.md)
 - [`../lib/README.md`](../lib/README.md)
 - [`../prisma/README.md`](../prisma/README.md)

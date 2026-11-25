@@ -1,13 +1,13 @@
 # Feature Calendar
 
-Cette feature regroupe le calendrier de suivi des crises d'épilepsie, la persistance des données personnelles et l'export PDF.
+Cette feature regroupe le calendrier de suivi des crises d'épilepsie, la persistance des données personnelles (ajout, modification, suppression) et l'export PDF.
 
 ## Fichiers
 
 | Fichier | Rôle |
 | --- | --- |
 | [`SeizureCalendar.tsx`](./SeizureCalendar.tsx) | Composant client d'affichage et d'interaction avec le calendrier. |
-| [`actions.ts`](./actions.ts) | Server Actions pour ajouter et supprimer une crise. |
+| [`actions.ts`](./actions.ts) | Server Actions pour ajouter, modifier et supprimer une crise. |
 | [`types.ts`](./types.ts) | Type partagé `Seizure`. |
 | [`options.ts`](./options.ts) | Types de crises et déclencheurs proposés dans les formulaires. |
 | [`demo-data.ts`](./demo-data.ts) | Données fictives utilisées sur la page d'accueil. |
@@ -20,7 +20,7 @@ Cette feature regroupe le calendrier de suivi des crises d'épilepsie, la persis
 La page d'accueil utilise le calendrier avec `mode="demo"` :
 
 - les données initiales viennent de [`demo-data.ts`](./demo-data.ts) ;
-- les ajouts et suppressions restent uniquement en mémoire ;
+- les ajouts, modifications et suppressions restent uniquement en mémoire ;
 - aucune donnée n'est enregistrée dans la base.
 
 ### Mode personnel
@@ -29,7 +29,7 @@ La page `/calendrier` utilise `mode="personal"` :
 
 - l'utilisateur doit être connecté ;
 - les crises sont chargées depuis PostgreSQL avec Prisma ;
-- les ajouts et suppressions passent par les Server Actions ;
+- les ajouts, modifications et suppressions passent par les Server Actions ;
 - l'utilisateur peut exporter les crises en PDF.
 
 ## Modèle `Seizure`
@@ -45,6 +45,14 @@ type Seizure = {
 };
 ```
 
+## Ajout, modification et suppression
+
+- **Ajout** : le bouton « Noter une crise » ouvre le formulaire pour le jour sélectionné.
+- **Modification** : le bouton « Modifier » d'une crise ouvre le même formulaire, pré-rempli. L'heure, le type, la durée et le déclencheur sont modifiables ; la date ne l'est pas. Changer de jour ou de mois, ou cliquer sur « Annuler », abandonne la modification.
+- **Suppression** : le bouton « Supprimer » ouvre une fenêtre de confirmation basée sur le composant partagé [`Dialog`](../components/ui/Dialog.tsx), avec « Annuler » focalisé par défaut.
+
+La validation des champs est centralisée dans `validateInput` (`actions.ts`) et partagée par l'ajout et la modification.
+
 ## Sécurité des données
 
 Les données de santé sont sensibles. Les Server Actions doivent toujours :
@@ -54,7 +62,7 @@ Les données de santé sont sensibles. Les Server Actions doivent toujours :
 3. filtrer les requêtes par `userId` ;
 4. ne jamais accepter un `userId` fourni par le navigateur.
 
-La suppression utilise également le couple `id` + `userId` afin d'empêcher la suppression d'une crise appartenant à un autre compte.
+La modification et la suppression utilisent le couple `id` + `userId` afin d'empêcher d'agir sur une crise appartenant à un autre compte.
 
 ## Export PDF
 

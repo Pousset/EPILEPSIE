@@ -7,10 +7,10 @@ Ce document recense les fonctions nommées et les handlers principaux du dossier
 | Domaine | Emplacement | Responsabilité |
 | --- | --- | --- |
 | Routes | [`app/`](../app/) | Rend les pages et compose les layouts Next.js. |
-| Articles | [`features/articles/`](../features/articles/) | Récupère, nettoie et affiche les articles de prévention depuis les API WordPress configurées. |
 | Authentification | [`features/auth/`](../features/auth/) | Crée les clients Better Auth et gère les formulaires/session. |
-| Calendrier | [`features/calendar/`](../features/calendar/) | Affiche, valide, ajoute, supprime et exporte les crises. |
-| Interface partagée | [`components/layout/`](../components/layout/) | Navigation et pied de page. |
+| Calendrier | [`features/calendar/`](../features/calendar/) | Affiche, valide, ajoute, modifie, supprime et exporte les crises. |
+| Articles | [`features/articles/`](../features/articles/) | Récupère, nettoie et affiche les articles des sites partenaires. |
+| Interface partagée | [`components/layout/`](../components/layout/), [`components/ui/`](../components/ui/) | Navigation, pied de page et fenêtre modale réutilisable. |
 | Infrastructure | [`lib/`](../lib/) | Connexion partagée à Prisma/Neon. |
 | Proxy | [`proxy.ts`](../proxy.ts) | Protège la route `/calendrier` grâce au cookie de session. |
 
@@ -48,14 +48,6 @@ Les constantes `geistSans`, `geistMono` et `metadata` configurent respectivement
 
 `PersonalCalendar` doit toujours filtrer les requêtes Prisma avec `session.user.id`.
 
-### `app/articles/page.tsx`
-
-| Fonction | Ligne | Exécution | Rôle |
-| --- | ---: | --- | --- |
-| [`ArticlesPage`](../app/articles/page.tsx:8) | 8 | Serveur | Charge les articles disponibles et affiche la page `/articles`. |
-
-La page définit également ses métadonnées et délègue la récupération des données à `fetchArticles`.
-
 ### `app/api/auth/[...all]/route.ts`
 
 | Handler | Rôle |
@@ -64,41 +56,6 @@ La page définit également ses métadonnées et délègue la récupération des
 | `POST` | Handler Better Auth généré pour les requêtes HTTP POST. |
 
 Les deux handlers sont produits par `toNextJsHandler(auth)` et ne doivent pas être réimplémentés manuellement.
-
-## Articles
-
-### `features/articles/fetch-articles.ts`
-
-| Fonction | Ligne | Exécution | Rôle |
-| --- | ---: | --- | --- |
-| `toPlainText` | 27 | Serveur | Convertit le contenu HTML d'un article en texte brut pour l'extrait. |
-| `cleanContent` | 41 | Serveur | Nettoie le HTML distant avec `sanitize-html` et conserve uniquement les images HTTPS autorisées. |
-| `toArticle` | 63 | Serveur | Transforme une réponse WordPress en objet `Article` utilisé par l'interface. |
-| `fetchFromSource` | 83 | Serveur | Récupère les articles d'une source WordPress avec timeout et vérification de réponse HTTP. |
-| [`fetchArticles`](../features/articles/fetch-articles.ts:107) | 107 | Serveur | Interroge les sources configurées en parallèle, applique un cache d'une heure, tolère les échecs partiels et trie les résultats. |
-
-### `features/articles/ArticleCard.tsx`
-
-| Fonction | Ligne | Rôle |
-| --- | ---: | --- |
-| `formatDate` | 4 | Formate la date de publication selon la locale française. |
-| [`ArticleCard`](../features/articles/ArticleCard.tsx:12) | 12 | Affiche la carte d'un article avec sa source, sa date, son image et son lien de lecture. |
-
-### `features/articles/ArticleReader.tsx`
-
-| Fonction | Ligne | Rôle |
-| --- | ---: | --- |
-| [`ArticleReader`](../features/articles/ArticleReader.tsx:14) | 14 | Affiche le contenu HTML nettoyé d'un article dans une vue de lecture. |
-| `open` | 31 | Ouvre la boîte de dialogue native et bloque le défilement de la page. |
-| `close` | 36 | Ferme la boîte de dialogue native de lecture. |
-
-### `features/articles/sources.ts`
-
-| Export | Rôle |
-| --- | --- |
-| `ARTICLE_SOURCES` | Liste les sources WordPress utilisées pour les articles d'information sur l'épilepsie. |
-
-Les types `ArticleSourceId`, `ArticleSource`, `Article` et `ArticlesResult` sont définis dans `features/articles/types.ts`.
 
 ## Authentification
 
@@ -137,26 +94,32 @@ Le composant utilise `authClient.useSession()` et son état local `open` pour af
 
 | Fonction | Ligne | Exécution | Rôle |
 | --- | ---: | --- | --- |
-| `requireUserId` | 19 | Serveur | Vérifie la session et renvoie l'identifiant de l'utilisateur connecté. Lève une erreur si aucune session n'existe. |
-| [`addSeizure`](../features/calendar/actions.ts:25) | 25 | Serveur | Valide les champs, associe la crise à l'utilisateur courant et l'enregistre avec Prisma. |
-| [`deleteSeizure`](../features/calendar/actions.ts:48) | 48 | Serveur | Supprime uniquement la crise correspondant à l'id fourni et à l'utilisateur connecté. |
+| `requireUserId` | 28 | Serveur | Vérifie la session et renvoie l'identifiant de l'utilisateur connecté. Lève une erreur si aucune session n'existe. |
+| `validateInput` | 35 | Serveur | Valide et normalise les champs d'une crise (date, heure, type, déclencheur, durée). Partagée par l'ajout et la modification. |
+| [`addSeizure`](../features/calendar/actions.ts:50) | 50 | Serveur | Valide les champs, associe la crise à l'utilisateur courant et l'enregistre avec Prisma. |
+| [`updateSeizure`](../features/calendar/actions.ts:60) | 60 | Serveur | Valide les champs puis modifie uniquement la crise correspondant à l'id fourni et à l'utilisateur connecté. |
+| [`deleteSeizure`](../features/calendar/actions.ts:73) | 73 | Serveur | Supprime uniquement la crise correspondant à l'id fourni et à l'utilisateur connecté. |
 
-`addSeizure` valide le format de la date, l'heure, le type et le déclencheur. La durée est limitée à 50 caractères et reçoit une valeur par défaut si elle est vide.
+`validateInput` vérifie le format de la date, l'heure, le type et le déclencheur. La durée est limitée à 50 caractères et reçoit une valeur par défaut si elle est vide.
 
 ### `features/calendar/SeizureCalendar.tsx`
 
 | Fonction | Ligne | Rôle |
 | --- | ---: | --- |
-| [`SeizureCalendar`](../features/calendar/SeizureCalendar.tsx:27) | 27 | Composant client principal du calendrier, utilisable en mode `demo` ou `personal`. |
-| `toKey` | 61 | Transforme un numéro de jour en clé `AAAA-MM-JJ`. |
-| `seizuresOn` | 64 | Filtre et trie les crises d'une journée par heure. |
-| `changeMonth` | 71 | Change le mois affiché et réinitialise la sélection et le formulaire. |
-| `selectDay` | 80 | Sélectionne une journée et prépare l'affichage de ses crises. |
-| `handleAdd` | 86 | Ajoute une crise en base en mode personnel ou en mémoire en mode démo. |
-| `handleDelete` | 112 | Demande confirmation, supprime éventuellement en base puis retire la crise de l'état local. |
-| `handleExport` | 126 | Sélectionne la période, prépare les données et lance l'export PDF. |
+| [`SeizureCalendar`](../features/calendar/SeizureCalendar.tsx:28) | 28 | Composant client principal du calendrier, utilisable en mode `demo` ou `personal`. |
+| `toKey` | 66 | Transforme un numéro de jour en clé `AAAA-MM-JJ`. |
+| `seizuresOn` | 69 | Filtre et trie les crises d'une journée par heure. |
+| `changeMonth` | 77 | Change le mois affiché, réinitialise la sélection et ferme le formulaire. |
+| `selectDay` | 86 | Sélectionne une journée et ferme le formulaire. |
+| `openAddForm` | 92 | Ouvre le formulaire en mode ajout. |
+| `startEdit` | 99 | Ouvre le formulaire pré-rempli avec la crise à modifier. |
+| `closeForm` | 109 | Ferme le formulaire et abandonne une éventuelle modification. |
+| `handleSave` | 114 | Ajoute ou modifie une crise : en base en mode personnel, en mémoire en mode démo. |
+| `handleDelete` | 144 | Ouvre la fenêtre de confirmation de suppression. |
+| `confirmDelete` | 149 | Supprime la crise confirmée (en base en mode personnel) puis la retire de l'état local. |
+| `handleExport` | 167 | Sélectionne la période, prépare les données et lance l'export PDF. |
 
-Les callbacks `onClick`, `onChange` et les fonctions de rendu des tableaux sont des fonctions inline liées à l'interface du calendrier.
+La confirmation de suppression utilise le composant partagé [`Dialog`](../components/ui/Dialog.tsx). Les callbacks `onClick`, `onChange` et les fonctions de rendu des tableaux sont des fonctions inline liées à l'interface du calendrier.
 
 ### `features/calendar/export-pdf.ts`
 
@@ -178,6 +141,40 @@ Les callbacks `onClick`, `onChange` et les fonctions de rendu des tableaux sont 
 | `SEIZURE_TRIGGERS` | [`options.ts`](../features/calendar/options.ts) | Déclencheurs disponibles dans le formulaire. |
 | `Seizure` | [`types.ts`](../features/calendar/types.ts) | Type partagé d'une crise. |
 
+## Articles
+
+### `features/articles/fetch-articles.ts`
+
+| Fonction | Ligne | Exécution | Rôle |
+| --- | ---: | --- | --- |
+| `toPlainText` | 39 | Serveur | Convertit du HTML en texte brut lisible (extraits et titres). |
+| `cleanContent` | 53 | Serveur | Nettoie le HTML tiers avec `sanitize-html` avant affichage. |
+| `toArticle` | 87 | Serveur | Convertit un article de l'API REST WordPress en `Article`. |
+| `fetchFromSource` | 107 | Serveur | Récupère les articles d'une source, avec cache d'une heure. Lève une erreur si la requête échoue. |
+| [`fetchArticles`](../features/articles/fetch-articles.ts:131) | 131 | Serveur | Interroge toutes les sources, ignore celles en échec, fusionne et trie les articles par date. |
+
+### `features/articles/ArticleCard.tsx`
+
+| Fonction | Ligne | Rôle |
+| --- | ---: | --- |
+| `formatDate` | 4 | Formate une date ISO en date lisible en français. |
+| [`ArticleCard`](../features/articles/ArticleCard.tsx:12) | 12 | Carte d'un article : image, extrait, bouton de lecture et lien vers l'original. |
+
+### `features/articles/ArticleReader.tsx`
+
+| Fonction | Ligne | Rôle |
+| --- | ---: | --- |
+| [`ArticleReader`](../features/articles/ArticleReader.tsx:33) | 33 | Client Component : bouton « Lire l'article » et affichage du contenu complet dans un `Dialog`. |
+
+La constante `CONTENT_CLASSES` stylise le HTML nettoyé. `ArticleReader` ne gère que l'état `open` : la fenêtre est fournie par [`Dialog`](../components/ui/Dialog.tsx).
+
+### Données
+
+| Export | Fichier | Rôle |
+| --- | --- | --- |
+| `ARTICLE_SOURCES` | [`sources.ts`](../features/articles/sources.ts) | Liste des sites sources (nom et URL de base). |
+| `Article`, `ArticleSource`, `ArticlesResult` | [`types.ts`](../features/articles/types.ts) | Types partagés de la feature. |
+
 ## Composants partagés
 
 ### `components/layout/Navbar.tsx`
@@ -195,6 +192,14 @@ Les callbacks `onClick`, `onChange` et les fonctions de rendu des tableaux sont 
 | --- | ---: | --- | --- |
 | `getYear` | 4 | Serveur | Fournit l'année affichée dans le footer. |
 | [`Footer`](../components/layout/Footer.tsx:9) | 9 | Serveur | Affiche le pied de page commun. |
+
+### `components/ui/Dialog.tsx`
+
+| Fonction | Ligne | Rôle |
+| --- | ---: | --- |
+| [`Dialog`](../components/ui/Dialog.tsx:26) | 26 | Fenêtre modale réutilisable basée sur le `<dialog>` natif, pilotée par les props `open` et `onClose`. |
+
+Props : `title` (obligatoire), `eyebrow`, `footer`, `size` (`"sm"` ou `"md"`) et `closeLabel`. Le composant bloque le défilement de la page pendant l'ouverture et se ferme avec Échap, la croix ou un clic sur le fond. Un élément portant `data-autofocus` reçoit le focus à l'ouverture. C'est un Client Component. Utilisé par `ArticleReader` et par la confirmation de suppression de `SeizureCalendar`.
 
 ### `lib/prisma.ts`
 

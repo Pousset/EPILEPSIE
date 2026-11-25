@@ -5,7 +5,7 @@ import { useState } from "react";
 import { fakeSeizures } from "@/features/calendar/demo-data";
 import type { Seizure } from "@/features/calendar/types";
 import { SEIZURE_TYPES, SEIZURE_TRIGGERS } from "@/features/calendar/options";
-import { addSeizure, deleteSeizure } from "@/features/calendar/actions";
+import { addSeizure, deleteSeizure, updateSeizure } from "@/features/calendar/actions";
 import { dateKey, exportSeizuresPdf, formatDate } from "@/features/calendar/export-pdf";
 import Dialog from "@/components/ui/Dialog";
 
@@ -42,6 +42,7 @@ export default function SeizureCalendar({
   const [selected, setSelected] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [editing, setEditing] = useState<Seizure | null>(null); // crise en cours de modification
   const [error, setError] = useState("");
 
   // Confirmation de suppression
@@ -78,35 +79,60 @@ export default function SeizureCalendar({
     setYear(d.getFullYear());
     setMonth(d.getMonth());
     setSelected(null);
-    setShowForm(false);
+    closeForm();
     setError("");
   }
 
   function selectDay(key: string) {
     setSelected(key);
-    setShowForm(false);
+    closeForm();
     setError("");
   }
 
-  async function handleAdd() {
+  function openAddForm() {
+    setEditing(null);
+    setError("");
+    setShowForm(true);
+  }
+
+  // Pré-remplit le formulaire avec la crise à modifier.
+  function startEdit(target: Seizure) {
+    setEditing(target);
+    setTime(target.time);
+    setType(target.type);
+    setDuration(target.duration === "Non précisée" ? "" : target.duration);
+    setTrigger(target.trigger);
+    setError("");
+    setShowForm(true);
+  }
+
+  function closeForm() {
+    setShowForm(false);
+    setEditing(null);
+  }
+
+  async function handleSave() {
     if (!selected || saving) return;
     setSaving(true);
     setError("");
 
     const input = { date: selected, time, type, duration, trigger };
+    const normalized = { ...input, duration: duration.trim() || "Non précisée" };
 
     try {
-      if (isPersonal) {
+      if (editing) {
+        const target = editing;
+        const updated =
+          isPersonal && target.id ? await updateSeizure(target.id, input) : normalized;
+        setSeizures((prev) => prev.map((s) => (s === target ? updated : s)));
+      } else if (isPersonal) {
         const created = await addSeizure(input);
         setSeizures((prev) => [...prev, created]);
       } else {
-        setSeizures((prev) => [
-          ...prev,
-          { ...input, duration: duration.trim() || "Non précisée" },
-        ]);
+        setSeizures((prev) => [...prev, normalized]);
       }
       setDuration("");
-      setShowForm(false);
+      closeForm();
     } catch {
       setError("Impossible d'enregistrer la crise. Réessaie.");
     } finally {
@@ -232,13 +258,22 @@ export default function SeizureCalendar({
                   Durée : {s.duration} · Déclencheur : {s.trigger}
                 </p>
               </div>
-              <button
-                onClick={() => handleDelete(s)}
-                aria-label="Supprimer cette crise"
-                className="px-2 text-red-600 hover:underline"
-              >
-                Supprimer
-              </button>
+              <div className="flex shrink-0 gap-1">
+                <button
+                  onClick={() => startEdit(s)}
+                  aria-label="Modifier cette crise"
+                  className="px-2 text-blue-700 hover:underline dark:text-blue-400"
+                >
+                  Modifier
+                </button>
+                <button
+                  onClick={() => handleDelete(s)}
+                  aria-label="Supprimer cette crise"
+                  className="px-2 text-red-600 hover:underline"
+                >
+                  Supprimer
+                </button>
+              </div>
             </div>
           ))}
 
@@ -246,13 +281,15 @@ export default function SeizureCalendar({
 
           {!showForm ? (
             <button
-              onClick={() => setShowForm(true)}
+              onClick={openAddForm}
               className="w-full rounded bg-blue-600 py-2 text-white hover:bg-blue-700"
             >
               + Noter une crise
             </button>
           ) : (
             <div className="space-y-3 rounded border p-3">
+              <p className="font-medium">{editing ? "Modifier la crise" : "Nouvelle crise"}</p>
+
               <label className="block">
                 <span className="mb-1 block">Heure</span>
                 <input
@@ -302,14 +339,14 @@ export default function SeizureCalendar({
 
               <div className="flex gap-2">
                 <button
-                  onClick={handleAdd}
+                  onClick={handleSave}
                   disabled={saving}
                   className="flex-1 rounded bg-blue-600 py-2 text-white hover:bg-blue-700 disabled:opacity-50"
                 >
                   {saving ? "Enregistrement…" : "Enregistrer"}
                 </button>
                 <button
-                  onClick={() => setShowForm(false)}
+                  onClick={closeForm}
                   className="flex-1 rounded border py-2"
                 >
                   Annuler
