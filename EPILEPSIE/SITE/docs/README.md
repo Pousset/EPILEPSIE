@@ -23,6 +23,10 @@ Ce dossier regroupe les copies centralisées de la documentation du projet Calen
 | [`next.md`](./next.md) | Dossier `.next` généré par Next.js. |
 | [`functions.md`](./functions.md) | Référence des fonctions et handlers du site. |
 
+## Tests
+
+La documentation des tests unitaires, d'intÃ©gration et des parcours E2E est dÃ©taillÃ©e dans [`e2e.md`](./e2e.md).
+
 ## Documentation canonique
 
 Les fichiers présents dans les dossiers du projet restent les références locales :

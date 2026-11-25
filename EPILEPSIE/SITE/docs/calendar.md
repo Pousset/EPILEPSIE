@@ -75,6 +75,10 @@ L'export est chargé dynamiquement uniquement lorsque l'utilisateur clique sur l
 
 Le document contient un résumé par type et déclencheur, ainsi que le détail des crises.
 
+## Tests
+
+La feature est couverte par des tests Vitest pour les Server Actions, la validation, les pÃ©riodes d'export, le comptage et le composant calendrier. Des tests d'intÃ©gration vÃ©rifient l'isolation des crises entre utilisateurs, et les parcours Playwright couvrent l'utilisation dans le navigateur.
+
 ## Exemple d'utilisation
 
 ```tsx

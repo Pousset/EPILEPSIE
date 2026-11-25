@@ -93,6 +93,9 @@ Ne jamais commiter `.env`, une URL PostgreSQL réelle ou un secret d'authentific
 | `pnpm build` | Compile et génère le build de production. |
 | `pnpm start` | Lance le build de production. |
 | `pnpm lint` | Lance ESLint. |
+| `pnpm test` | Lance les tests unitaires Vitest. |
+| `pnpm run test:integration` | Lance les tests d'intÃ©gration avec la base de test. |
+| `pnpm run test:e2e` | Lance les parcours navigateur Playwright sur le port 3100. |
 | `pnpm install` | Installe les dépendances et génère le client Prisma. |
 | `pnpm exec prisma generate` | Régénère le client Prisma. |
 | `pnpm exec prisma validate` | Vérifie le schéma Prisma. |
@@ -108,6 +111,8 @@ Avant une livraison, exécuter au minimum :
 pnpm lint
 pnpm build
 ```
+
+Pour les modifications touchant l'authentification ou le calendrier, exÃ©cuter aussi `pnpm test`, puis `pnpm run test:e2e` avec un fichier `.env.test` configurÃ©. La stratÃ©gie complÃ¨te est dÃ©crite dans [`e2e.md`](./e2e.md).
 
 ## Architecture
 

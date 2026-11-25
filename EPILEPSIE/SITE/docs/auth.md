@@ -41,6 +41,12 @@ BETTER_AUTH_URL=http://localhost:3000
 
 Ne jamais commiter les valeurs réelles de `.env`.
 
+## Mot de passe oubliÃ©
+
+La demande de rÃ©initialisation est disponible sur `/mot-de-passe-oublie`. La page `/reinitialiser-mot-de-passe` applique le nouveau mot de passe Ã  partir du token fourni par Better Auth.
+
+Les formulaires correspondants sont [`ForgotPasswordForm.tsx`](./ForgotPasswordForm.tsx) et [`ResetPasswordForm.tsx`](./ResetPasswordForm.tsx).
+
 ## Bonnes pratiques
 
 - Ne pas importer `authClient` dans un composant serveur.
