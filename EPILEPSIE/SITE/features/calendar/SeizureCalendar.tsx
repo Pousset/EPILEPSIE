@@ -7,6 +7,7 @@ import type { Seizure } from "@/features/calendar/types";
 import { SEIZURE_TYPES, SEIZURE_TRIGGERS } from "@/features/calendar/options";
 import { addSeizure, deleteSeizure } from "@/features/calendar/actions";
 import { dateKey, exportSeizuresPdf, formatDate } from "@/features/calendar/export-pdf";
+import Dialog from "@/components/ui/Dialog";
 
 const MONTHS = [
   "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
@@ -42,6 +43,10 @@ export default function SeizureCalendar({
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+
+  // Confirmation de suppression
+  const [toDelete, setToDelete] = useState<Seizure | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   // Export PDF
   const [period, setPeriod] = useState<Period>("3m");
@@ -109,9 +114,16 @@ export default function SeizureCalendar({
     }
   }
 
-  async function handleDelete(target: Seizure) {
-    if (!confirm("Supprimer cette crise ?")) return;
+  // Ouvre la fenêtre de confirmation ; la suppression réelle se fait dans confirmDelete.
+  function handleDelete(target: Seizure) {
     setError("");
+    setToDelete(target);
+  }
+
+  async function confirmDelete() {
+    if (!toDelete || deleting) return;
+    const target = toDelete;
+    setDeleting(true);
 
     try {
       if (isPersonal && target.id) {
@@ -120,6 +132,9 @@ export default function SeizureCalendar({
       setSeizures((prev) => prev.filter((s) => s !== target));
     } catch {
       setError("Impossible de supprimer la crise. Réessaie.");
+    } finally {
+      setDeleting(false);
+      setToDelete(null);
     }
   }
 
@@ -331,6 +346,41 @@ export default function SeizureCalendar({
           {exportError && <p role="alert" className="text-red-600">{exportError}</p>}
         </div>
       )}
+
+      <Dialog
+        open={toDelete !== null}
+        onClose={() => setToDelete(null)}
+        title="Supprimer cette crise ?"
+        size="sm"
+        closeLabel="Annuler la suppression"
+        footer={
+          <>
+            <button
+              type="button"
+              data-autofocus
+              onClick={() => setToDelete(null)}
+              className="rounded border border-zinc-300 px-4 py-2 text-sm hover:bg-zinc-100 dark:border-zinc-600 dark:hover:bg-zinc-800"
+            >
+              Annuler
+            </button>
+            <button
+              type="button"
+              onClick={confirmDelete}
+              disabled={deleting}
+              className="rounded bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50"
+            >
+              {deleting ? "Suppression…" : "Supprimer"}
+            </button>
+          </>
+        }
+      >
+        {toDelete && (
+          <p className="text-sm">
+            {toDelete.type} du {formatDate(toDelete.date)} à {toDelete.time}. Cette action est
+            définitive.
+          </p>
+        )}
+      </Dialog>
 
       <p className="mt-4 text-xs text-gray-500">
         {isPersonal
