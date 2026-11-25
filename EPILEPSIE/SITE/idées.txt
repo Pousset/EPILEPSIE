@@ -1,0 +1,81 @@
+Un tableau de bord de statistiques
+Après avoir enregistré ses crises, l’utilisateur pourrait voir :
+
+le nombre de crises par semaine ou par mois ;
+les types de crises les plus fréquents ;
+la durée moyenne ;
+les déclencheurs récurrents : stress, manque de sommeil, alcool, oubli de traitement ;
+l’évolution dans le temps avec des graphiques ;
+le nombre de jours depuis la dernière crise.
+C’est une suite naturelle au calendrier et ça rend les données beaucoup plus utiles pour le patient et son médecin.
+
+Autres idées intéressantes :
+
+Suivi du traitement : médicaments, dosage, horaires et oublis.
+Journal des symptômes : sommeil, humeur, stress, fatigue et effets secondaires.
+Espace médecin : partage temporaire d’un rapport ou d’un lien sécurisé.
+Carte d’urgence : informations importantes à afficher en cas de crise.
+Rappels personnalisés : prise de médicament ou saisie quotidienne.
+Export CSV en complément du PDF.
+Import de données depuis un fichier ou une ancienne application.
+Mode proche/proche aidant avec permissions limitées.
+Je commencerais par le tableau de bord, puis le suivi du traitement, car ces deux fonctionnalités apportent rapidement beaucoup de valeur.
+
+
+Oui, ce serait une excellente feature : un coffre-fort de documents médicaux.
+
+L’utilisateur pourrait ajouter :
+
+ordonnances ;
+comptes-rendus de consultation ;
+résultats d’IRM ou d’EEG ;
+courriers de neurologue ;
+certificats ou documents administratifs.
+Pour chaque document :
+
+titre et catégorie ;
+date du document ;
+description facultative ;
+aperçu PDF ou image ;
+téléchargement et suppression ;
+recherche et filtres.
+Techniquement, je conseille :
+
+fichiers stockés dans un espace privé type Neon Object Storage ;
+uniquement les métadonnées stockées dans PostgreSQL via Prisma ;
+accès vérifié avec userId ;
+liens de téléchargement temporaires ;
+limite de taille et types autorisés : PDF, JPG, PNG ;
+aucun document accessible publiquement.
+Le MVP pourrait contenir :
+
+une page /documents ;
+un bouton d’import ;
+une liste des fichiers ;
+la prévisualisation et le téléchargement ;
+la suppression sécurisée ;
+une organisation par catégories.
+
+Oui : une fiche d’urgence personnelle serait très pertinente.
+
+Elle pourrait afficher rapidement :
+
+nom et personne à contacter ;
+type d’épilepsie ;
+durée habituelle des crises ;
+gestes à faire et à éviter ;
+médicaments importants ;
+allergies ;
+numéro du neurologue ;
+bouton d’appel d’urgence.
+Elle serait accessible depuis un bouton « Urgence », même sans naviguer dans toute l’application.
+
+Autres idées :
+
+Journal quotidien : sommeil, stress, fatigue, humeur et symptômes.
+Suivi des médicaments : prises, oublis et effets secondaires.
+Mode proche aidant : autoriser un parent à consulter certaines informations.
+Questionnaire avant consultation : générer automatiquement un résumé pour le neurologue.
+Mode sombre et gros boutons pour une utilisation simple pendant une situation stressante.
+Notification de suivi après une crise pour rappeler de compléter les informations.
+Pour une fonctionnalité à la fois utile et originale, je choisirais la fiche d’urgence.
