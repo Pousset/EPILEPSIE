@@ -9,3 +9,6 @@ Dockerfile
 compose.yaml
 .dockerignore
 *.md
+e2e/
+playwright.config.ts
+test-results/
