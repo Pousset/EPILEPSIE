@@ -7,6 +7,7 @@ import type { Seizure } from "@/features/calendar/types";
 import { SEIZURE_TYPES, SEIZURE_TRIGGERS } from "@/features/calendar/options";
 import { addSeizure, deleteSeizure, updateSeizure } from "@/features/calendar/actions";
 import { dateKey, exportSeizuresPdf, formatDate } from "@/features/calendar/export-pdf";
+import { subtractMonths } from "@/features/calendar/period";
 import Dialog from "@/components/ui/Dialog";
 
 const MONTHS = [
@@ -177,7 +178,7 @@ export default function SeizureCalendar({
     } else if (period === "3m" || period === "6m") {
       const months = period === "3m" ? 3 : 6;
       const now = new Date();
-      const fromKey = dateKey(new Date(now.getFullYear(), now.getMonth() - months, now.getDate()));
+      const fromKey = dateKey(subtractMonths(now, months));
       const untilKey = dateKey(now);
       list = seizures.filter((s) => s.date >= fromKey && s.date <= untilKey);
       label = `${months} derniers mois (du ${formatDate(fromKey)} au ${formatDate(untilKey)})`;
