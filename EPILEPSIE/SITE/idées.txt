@@ -1,3 +1,5 @@
+
+
 Un tableau de bord de statistiques
 Après avoir enregistré ses crises, l’utilisateur pourrait voir :
 
