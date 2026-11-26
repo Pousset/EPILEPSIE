@@ -1,10 +1,11 @@
-// app/connexion/page.tsx
 import AuthForm from "@/features/auth/AuthForm";
-
+import DevLoginButton from "@/features/auth/DevLoginButton";
+import { isDevLoginEnabled } from "@/features/auth/dev-login-config";
 export default function ConnexionPage() {
   return (
-    <section className="flex justify-center px-6 py-10">
+    <div className="flex flex-col items-center gap-4">
       <AuthForm mode="signin" />
-    </section>
+      {isDevLoginEnabled() && <DevLoginButton />}
+    </div>
   );
 }
