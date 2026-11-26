@@ -54,16 +54,52 @@ Depuis la racine du projet :
 ```bash
 pnpm install
 pnpm exec prisma generate
+```
+
+## Lancer le serveur en développement
+
+```bash
 pnpm dev
 ```
 
-L'application est ensuite disponible à l'adresse [http://localhost:3000](http://localhost:3000).
+L'application est ensuite disponible à l'adresse [http://localhost:3000](http://localhost:3000). Le bouton de connexion automatique est disponible dans ce mode lorsque `ENABLE_DEV_LOGIN=true`.
+
+## Lancer le serveur en production avec Docker
+
+Depuis la racine du projet, après avoir configuré le fichier `.env` :
+
+### Vérifier la configuration
+
+```
+docker compose config
+```
+
+### Étape 3 — Récupérer les images Docker
+
+```
+docker compose pull
+```
+
+### Étape 4 — Construire et démarrer les services
+
+```
+docker compose up -d --build
+```
+
+### Étape 5 — Vérifier le fonctionnement
+
+```
+docker compose ps
+docker compose logs -f
+```
+
+L'application est ensuite disponible à l'adresse [http://localhost:3000](http://localhost:3000). Le bouton de connexion automatique est désactivé en production.
 
 Le script `postinstall` lance automatiquement `prisma generate` après l'installation des dépendances.
 
 ## Variables d'environnement
 
-Créer un fichier `.env` à partir de [`.env.example`](./.env.example) :
+Créer un fichier `.env` à partir de [`.env.example`](./.env.example) et `.env.test` à partir de [`.env.test.example`](./.env.test.example) :
 
 ```env
 # URL avec pooler, utilisée par l'application
