@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import AssociationCard from "@/features/information/AssociationCard";
-import { ASSOCIATIONS, COUNTRIES } from "@/features/information/associations";
+import { ASSOCIATIONS } from "@/features/information/associations";
+import { COUNTRIES } from "@/features/information/countries";
 
 export const metadata: Metadata = {
   title: "Associations",

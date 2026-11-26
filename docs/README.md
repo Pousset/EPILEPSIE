@@ -15,6 +15,7 @@ Ce dossier regroupe les copies centralisées de la documentation du projet Calen
 | [`features.md`](./features.md) | Organisation des fonctionnalités métier. |
 | [`auth.md`](./auth.md) | Authentification Better Auth et gestion des sessions. |
 | [`calendar.md`](./calendar.md) | Calendrier, Server Actions (ajout, modification, suppression), données de crise et export PDF. |
+| [`information.md`](./information.md) | Associations et annuaire des centres spécialisés. |
 | [`articles.md`](./articles.md) | Page d'articles : sources WordPress, nettoyage du HTML et fenêtre de lecture. |
 | [`components.md`](./components.md) | Composants d'interface réutilisables (layout et `Dialog`). |
 | [`lib.md`](./lib.md) | Infrastructure partagée et client Prisma. |
@@ -36,6 +37,7 @@ Les fichiers présents dans les dossiers du projet restent les références loca
 - [`../features/README.md`](../features/README.md)
 - [`../features/auth/README.md`](../features/auth/README.md)
 - [`../features/calendar/README.md`](../features/calendar/README.md)
+- [`../features/information/README.md`](../features/information/README.md)
 - [`../features/articles/README.md`](../features/articles/README.md)
 - [`../components/README.md`](../components/README.md)
 - [`../lib/README.md`](../lib/README.md)

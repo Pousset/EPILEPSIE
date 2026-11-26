@@ -1,10 +1,4 @@
-import type { Association, Country } from "@/features/information/types";
-
-export const COUNTRIES: { id: Country; label: string }[] = [
-  { id: "fr", label: "France" },
-  { id: "be", label: "Belgique" },
-  { id: "ch", label: "Suisse" },
-];
+import type { Association } from "@/features/information/types";
 
 // Descriptions volontairement courtes et générales : le site officiel reste la référence.
 // Mettre à jour `verifiedAt` à chaque revérification d'une fiche.

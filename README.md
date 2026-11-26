@@ -118,6 +118,8 @@ SITE/
 ├─ app/                         # Routes Next.js App Router
 │  ├─ about/
 │  ├─ api/auth/[...all]/        # Route Better Auth
+│  ├─ annuaire/
+│  ├─ associations/
 │  ├─ calendrier/               # Calendrier personnel
 │  ├─ connexion/
 │  ├─ inscription/
@@ -126,7 +128,8 @@ SITE/
 │  └─ globals.css
 ├─ features/                    # Fonctionnalités métier
 │  ├─ auth/
-│  └─ calendar/
+│  ├─ calendar/
+│  └─ information/
 ├─ components/                  # Composants d'interface partagés
 │  └─ layout/
 ├─ lib/                         # Infrastructure partagée
@@ -169,6 +172,7 @@ Documentation détaillée :
 - [`features/README.md`](./features/README.md) — organisation métier ;
 - [`features/auth/README.md`](./features/auth/README.md) — authentification ;
 - [`features/calendar/README.md`](./features/calendar/README.md) — calendrier et export ;
+- [`features/information/README.md`](./features/information/README.md) — asso
 - [`components/README.md`](./components/README.md) — composants partagés ;
 - [`lib/README.md`](./lib/README.md) — infrastructure et client Prisma ;
 - [`prisma/README.md`](./prisma/README.md) — schéma et migrations ;

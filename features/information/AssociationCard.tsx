@@ -1,9 +1,5 @@
+import { formatDate } from "@/features/information/format";
 import type { Association } from "@/features/information/types";
-
-// "2026-11-26" -> "26/11/2026" (sans passer par Date, donc sans décalage de fuseau)
-function formatDate(key: string): string {
-  return key.split("-").reverse().join("/");
-}
 
 export default function AssociationCard({ association }: { association: Association }) {
   return (

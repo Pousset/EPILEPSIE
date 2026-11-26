@@ -11,6 +11,8 @@ app/
 ├─ globals.css
 ├─ about/page.tsx
 ├─ contact/page.tsx
+├─ associations/page.tsx
+├─ annuaire/page.tsx
 ├─ connexion/page.tsx
 ├─ inscription/page.tsx
 ├─ calendrier/page.tsx
@@ -36,6 +38,8 @@ app/
 | `/` | [`page.tsx`](./page.tsx) | Public, calendrier de démonstration. |
 | `/about` | [`about/page.tsx`](./about/page.tsx) | Public. |
 | `/contact` | [`contact/page.tsx`](./contact/page.tsx) | Public. |
+| `/associations` | [`associations/page.tsx`](./associations/page.tsx) | Public. Associations par pays. |
+| `/annuaire` | [`annuaire/page.tsx`](./annuaire/page.tsx) | Public. Annuaires officiels et centres spécialisés. |
 | `/connexion` | [`connexion/page.tsx`](./connexion/page.tsx) | Public. |
 | `/inscription` | [`inscription/page.tsx`](./inscription/page.tsx) | Public. |
 | `/calendrier` | [`calendrier/page.tsx`](./calendrier/page.tsx) | Privé, réservé aux utilisateurs connectés. |
