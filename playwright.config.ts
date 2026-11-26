@@ -1,6 +1,9 @@
 import { defineConfig, devices } from "@playwright/test";
 import { getTestDatabaseUrl } from "./e2e/env";
 
+// Le test et le serveur lisent la même valeur : elle est fixée ici, pas dans .env
+process.env.ENABLE_DEV_LOGIN = "true";
+
 const testUrl = getTestDatabaseUrl();
 const PORT = 3100;
 
@@ -24,7 +27,8 @@ export default defineConfig({
     url: `http://localhost:${PORT}`,
     reuseExistingServer: false,
     timeout: 120_000,
-        env: {
+    env: {
+      ENABLE_DEV_LOGIN: "true",
       DATABASE_URL: testUrl,
       BETTER_AUTH_URL: `http://localhost:${PORT}`,
       // Aucun vrai email pendant les tests : les valeurs vides l'emportent sur celles du .env
