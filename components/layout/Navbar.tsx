@@ -14,7 +14,7 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="flex items-center justify-between border-b px-6 py-4">
+    <nav className="flex items-center justify-between border-b px-6 py-4 print:hidden">
       <Link href="/" className="text-lg font-bold">
         MonSite
       </Link>

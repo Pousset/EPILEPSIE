@@ -11,30 +11,31 @@ datasource db {
 
 model Seizure {
   id        String   @id @default(cuid())
-  date      String   // AAAA-MM-JJ
-  time      String   // HH:MM
+  date      String // AAAA-MM-JJ
+  time      String // HH:MM
   type      String
   duration  String
   trigger   String
   createdAt DateTime @default(now())
 
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, date])
 }
 
 model User {
-  id            String    @id
+  id            String         @id
   name          String
   email         String
-  emailVerified Boolean   @default(false)
+  emailVerified Boolean        @default(false)
   image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
   sessions      Session[]
   accounts      Account[]
-  seizures Seizure[]
+  seizures      Seizure[]
+  emergencyCard EmergencyCard?
 
   @@unique([email])
   @@map("user")
@@ -86,4 +87,22 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+model EmergencyCard {
+  id               String   @id @default(cuid())
+  userId           String   @unique
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fullName         String
+  contactName      String
+  contactPhone     String
+  epilepsyType     String
+  usualDuration    String
+  doList           String
+  dontList         String
+  medications      String
+  allergies        String
+  neurologistName  String
+  neurologistPhone String
+  updatedAt        DateTime @updatedAt
 }

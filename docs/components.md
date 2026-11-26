@@ -9,7 +9,8 @@ components/
 ├─ README.md
 └─ layout/
    ├─ Navbar.tsx
-   └─ Footer.tsx
+   ├─ Footer.tsx
+   └─ EmergencyButton.tsx
 ```
 
 ## Composants disponibles
@@ -18,6 +19,7 @@ components/
 | --- | --- | --- |
 | [`layout/Navbar.tsx`](./layout/Navbar.tsx) | Navigation principale, liens publics et état de connexion. | Client Component |
 | [`layout/Footer.tsx`](./layout/Footer.tsx) | Pied de page partagé par toutes les pages. | Server Component |
+| [`layout/EmergencyButton.tsx`](./layout/EmergencyButton.tsx) | Lien vers la page d'urgence, affiché au centre du footer. | Server Component |
 
 ## Utilisation
 
@@ -51,7 +53,7 @@ Comme il utilise `authClient.useSession()`, il doit rester un Client Component.
 
 ## Footer
 
-[`Footer.tsx`](./layout/Footer.tsx) affiche le pied de page commun et les informations générales du site. Il n'a pas besoin d'état local ni d'accès au navigateur : il reste donc un Server Component.
+[`Footer.tsx`](./layout/Footer.tsx) affiche le pied de page commun et les informations générales du site. Il intègre aussi [`EmergencyButton.tsx`](./layout/EmergencyButton.tsx), centré dans le footer pour accéder à la page d'urgence. Il reste donc un Server Component.
 
 ## Organisation des composants
 
