@@ -1,212 +1,297 @@
+# Calendrier Épilepsie
 
-## _Streaming, DDL, Torrent, etc._
+Application web de suivi des crises d'épilepsie. Elle permet de consulter un calendrier de démonstration, de créer un compte, puis d'enregistrer ses crises dans un calendrier personnel et d'exporter un journal PDF pour son médecin.
 
+> Les données manipulées peuvent être des données de santé sensibles. Cette application est un projet en développement et ne remplace pas un dispositif médical ni un avis médical.
 
-***
+## Fonctionnalités
 
-# 🏴‍☠️ L'Annuaire Tipiak
+- Page d'accueil avec un calendrier de démonstration et des données fictives.
+- Inscription et connexion par email et mot de passe.
+- Calendrier personnel protégé par authentification.
+- Ajout d'une crise avec date, heure, type, durée et déclencheur.
+- Suppression d'une crise appartenant à l'utilisateur connecté.
+- Export PDF selon plusieurs périodes : mois affiché, trois mois, six mois ou toutes les crises.
+- Interface en français et responsive.
+- Navigation adaptée à l'état de la session.
+- Base PostgreSQL hébergée sur Neon avec Prisma.
+- Déploiement Docker possible grâce à une image Next.js standalone.
 
-## 🎬 Streaming
+## Stack technique
 
-### Plateformes Films & Séries 🇫🇷
+| Technologie | Utilisation |
+| --- | --- |
+| [Next.js](https://nextjs.org/) 16 | Framework React et App Router. |
+| [React](https://react.dev/) 19 | Interface utilisateur. |
+| [TypeScript](https://www.typescriptlang.org/) | Typage du code. |
+| [Tailwind CSS](https://tailwindcss.com/) | Styles et mise en page. |
+| [Better Auth](https://www.better-auth.com/) | Inscription, connexion et sessions. |
+| [Prisma](https://www.prisma.io/) 7 | ORM et migrations PostgreSQL. |
+| [Neon](https://neon.tech/) | PostgreSQL serverless. |
+| [jsPDF](https://github.com/parallax/jsPDF) | Génération des exports PDF. |
+| Docker | Construction et exécution en production. |
 
-| Site | Qualité / Infos | Secours / Status |
-| :--- | :--- | :--- |
-| **[FrenchStream](https://fs18.lol/)** | 1080p / Multi | [Domaine à jour](https://fstream.info/) |
-| **[Movix](https://movix.rodeo/)** | 1080p | [Aide Movix](https://movix.online/) |
-| **[SadisFlix](http://sadisflix-officiel.biz/)** | 1080p | [Sadis Wiki](https://sadis.wiki/) |
-| **[ToFlix](https://toflix.space/)** | Films & Animés | [Lien actuel](https://toflix.mom/) |
-| **[InfinityStream](https://infinitystream.cc/)** | 1080p | [Linkfly Status](https://linkfly.to/71125aiSwzObv) |
-| **[WiFlix](https://flemmix.golf/)** | 1080p | [News Site](https://wiflix-news.site/) |
-| **[Zone-Téléchargement](https://www.zone-telechargement.pizza/)** | Films / Séries | [Telegram](https://t.me/ztofficiel/) |
-| **[Purstream](https://purstream.art/)** | Films uniquement | [Domaine à jour](https://purstream.wiki/) / [Telegram](https://purstream.to/telegram) |
-| **[Cinestream](https://cinestream.info/)** | Films uniquement | - |
-| **[Dotriv](https://dotriv.com/)** | Minimaliste au possible | - |
-| **[Darkiworld](https://darkiworld2026.com/)** | Inscription requise | - |
-| **[Ozyma](https://ozyma.fr/)** | 1080p | - |
-| **[HDS](https://wwv.hds-stream.quest/)** | 1080p | - |
+## Prérequis
 
-***
+- Node.js 22 ou version compatible avec Next.js 16.
+- pnpm 11 recommandé, car le projet utilise `pnpm-lock.yaml`.
+- Un projet PostgreSQL, recommandé avec [Neon](https://neon.tech/).
+- Git pour récupérer le projet et versionner les migrations.
 
-## ⚽ Sport
+Vérifier les versions installées :
 
-### Direct & Replay
+```bash
+node --version
+pnpm --version
+```
 
-| Site | Type | Infos / Secours |
-| :--- | :--- | :--- |
-| **[Ohquelbut](https://ohquelbut.club/)** | Foot / Sport 🇫🇷 | [Chatango Status](https://ewenethan22bzh.chatango.com/) / [Discord](https://discord.gg/kgyJzGKAyg) |
-| **[Football Origin](https://www.footballorgin.com/)** | Foot / Sport | - |
-| **[Stream2Watch](https://sports.stream2watch.com/)** | Multi-sports 🇬🇧 | [Telegram](https://t.me/istream2watch/) |
-| **[Streamed](https://streamed.pk/)** | Multi-sports 🇬🇧 | [Lien de secours](https://strmd.link/) |
-| **[SportPlus](https://en12.sportplus.live/)** | Multi-sports 🇬🇧 | Football, Tennis, NBA |
-| **[Soccer Streams](https://soccerbox.net/)** | Football | Liens haute qualité |
-| **[NBABox](https://nbabox.co/)** | Basketball | Liens US |
-| **[FullReplays](https://www.fullreplays.com/)** | Replay Foot | Matchs complets |
-| **[Watch-Wrestling](https://watch-wrestling.eu/)** | Replay Combat | MMA / Catch |
+## Installation locale
 
-***
+Depuis la racine du projet :
 
-## 🏮 Anime & Manga
+```bash
+pnpm install
+pnpm exec prisma generate
+pnpm dev
+```
 
-### Streaming & APK
+L'application est ensuite disponible à l'adresse [http://localhost:3000](http://localhost:3000).
 
-| Site | Langue | Particularité |
-| :--- | :--- | :--- |
-| **[Fankai](https://fankai.fr/productions)** | 🇫🇷 | Qualité supérieure / [Discord](https://discord.gg/team-fankai-414117314418704414/) |
-| **[Anime-Sama](https://anime-sama.org/)** | 🇫🇷 | Mises à jour rapides |
-| **[French Anime](https://french-anime.com)** | 🇫🇷 | Mises à jour rapides |
-| **[FrAnime](https://franime.fr/)** | 🇫🇷 | Interface épurée |
-| **[Animeo](https://animeovf.fr/)** | 🇫🇷 | Sans pub / Compatible Cast TV |
-| **[HiAnime](https://hianime.to/)** | 🇬🇧/🇫🇷 ST | Catalogue mondial / [APK](https://hianime.to/app-download/) |
-| **[Jet anime](https://on.jetanimes.com/)** | 🇫🇷 | - |
-| **[VoirAnime](https://v6.voiranime.com/)** | 🇫🇷 | Mises à jour rapides |
-| **[VostFree](https://vostfree.ws/)** | 🇫🇷 | - |
-| **[Sushiscan](https://sushiscan.net/)** | 🇫🇷 | Scans de Mangas (Lecture) |
-| **[Origines](https://mangas-origines.fr/)** | 🇫🇷 | Scans & Webtoons |
+Le script `postinstall` lance automatiquement `prisma generate` après l'installation des dépendances.
 
-***
+## Variables d'environnement
 
-## ⛓️ Torrenting
+Créer un fichier `.env` à partir de [`.env.example`](./.env.example) :
 
-### Trackers
+```env
+# URL avec pooler, utilisée par l'application
+DATABASE_URL="postgresql://utilisateur:motdepasse@hote-pooler.neon.tech/neondb?sslmode=require"
 
-| Site | Langue | Particularité |
-| :--- | :--- | :--- |
-| **[C411](https://c411.org/)** | 🇫🇷 | Nouveau TK francophone |
-| **[Torr9](https://torr9.net/)** | 🇫🇷 | Nouveau TK francophone |
-| **[La Cale](https://la-cale.space/)** | 🇫🇷 | Nouveau TK francophone |
-| **[Sharewood](https://www.sharewood.tv/)** | 🇫🇷 | Communauté privée active |
-| **[1337x](https://1337x.to/)** | 🇬🇧 | International / Très complet |
-| **[Demonoid](https://www.demonoid.is/)** | 🇬🇧 | Torrents vérifiés |
-| **[TorrentGalaxy](https://torrentgalaxy.to/)** | 🇬🇧 | Annuaire généraliste (previews) |
+# URL directe, utilisée par Prisma pour les migrations et Prisma Studio
+DATABASE_URL_UNPOOLED="postgresql://utilisateur:motdepasse@hote.neon.tech/neondb?sslmode=require"
 
-***
+# Secret aléatoire pour Better Auth
+BETTER_AUTH_SECRET=""
 
-## 💾 DDL
+# URL complète de l'application
+BETTER_AUTH_URL="http://localhost:3000"
+```
 
-### Plateformes DDL Films & Séries 🇫🇷
+Générer un secret Better Auth avec Node.js :
 
-| Site | Langue | Infos / Secours |
-| :--- | :--- | :--- |
-| **[Zone-Téléchargement](https://www.zone-telechargement.pizza/)** | 🇫🇷 | [Telegram Officiel](https://t.me/ZT_officiel/) |
-| **[Loadix](https://loadix.fun/)** | 🇫🇷 | DDL with movix VIP |
-| **[Wawacity](https://www.wawacity.pizza/)** | 🇫🇷 | Suivi domaines via Telegram |
-| **[Darkiworld](https://darkiworld2026.com/)** | 🇫🇷 | Catalogue important (DDL & Stream) |
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
+```
 
+Ne jamais commiter `.env`, une URL PostgreSQL réelle ou un secret d'authentification.
 
-***
+## Commandes disponibles
 
-## 🎮 Gaming & ROMs
+| Commande | Description |
+| --- | --- |
+| `pnpm dev` | Lance le serveur de développement. |
+| `pnpm build` | Compile et génère le build de production. |
+| `pnpm start` | Lance le build de production. |
+| `pnpm lint` | Lance ESLint. |
+| `pnpm install` | Installe les dépendances et génère le client Prisma. |
+| `pnpm exec prisma generate` | Régénère le client Prisma. |
+| `pnpm exec prisma validate` | Vérifie le schéma Prisma. |
+| `pnpm exec prisma format` | Formate le schéma Prisma. |
+| `pnpm exec prisma migrate dev --name nom` | Crée et applique une migration en développement. |
+| `pnpm exec prisma migrate deploy` | Applique les migrations en production. |
+| `pnpm exec prisma migrate status` | Affiche l'état des migrations. |
+| `pnpm run prisma:studio` | Ouvre Prisma Studio. |
 
-### Jeux PC & Consoles
+Avant une livraison, exécuter au minimum :
 
-| Site | Catégorie | Particularité |
-| :--- | :--- | :--- |
-| **[Get Free Games](https://getfree.games/)** | Jeux PC | Liste des jeux gratuit du moment |
-| **[Gomorgames](https://gomorgames.com/)** | Jeux PC 🇫🇷 | Quali / [Discord](https://discord.gg/raWtANAZqF) |
-| **[Gog Games](https://www.gog-games.to/)** | Jeux PC | Archives Gog (DRM free) |
-| **[Gload](https://gload.cc/)** | Jeux PC | Archives de jeux |
-| **[CS.RIN.RU](https://cs.rin.ru/forum/)** | Forum / Crack | Steam Underground Community |
-| **[GOG Complete](https://cs.rin.ru/forum/viewtopic.php?f=38&t=136823)** | Jeux PC | Collection GOG via CS.RIN.RU |
-| **[G4U](https://g4u.to/)** | Jeux PC | Archive de jeux vidéo |
-| **[FitGirl](https://fitgirl-repacks.site/)** | Repacks | Ultra-compression (Longue install) |
-| **[ElAmigo](https://elamigos.site/)** | Repacks | Groupe de repack reconnu |
-| **[Gnarly](https://rentry.org/gnarly_repacks)** | Repacks | Archives divers |
-| **[KaosKrew](https://kaoskrew.org/)** | Repacks | Groupe de repack |
-| **[ARMGDDN](https://t.me/ARMGDDNGames)** | Repacks | Groupe Telegram |
-| **[SteamRIP](https://steamrip.com/)** | Jeux PC | Pré-installés (No Install) |
-| **[Online-Fix](https://online-fix.me/)** | Multiplayer | Jouer en ligne sur jeux crackés |
-| **[MyAbandoneware](https://www.myabandonware.com/)** | Abandonware | Jeux délaissés |
-| **[OldGamesDownload](https://oldgamesdownload.com/)** | Rétro PC/Consoles | Archive de vieux jeux |
-| **[ClassicPCGames](https://archive.org/details/classicpcgames)** | Archive PC | Vieux jeux via Archive.org |
-| **[r/Roms Megathread](https://r-roms.github.io/)** | ROMs | La bible du milieu |
-| **[MyRient Shop](https://myrient.erista.me/)** | ROMs | Catalogue universel |
-| **[CDRomance](https://cdromance.com/)** | ROMs | Focus jeux rétro & traductions |
-| **[Edge Emulation](https://edgeemu.net/)** | ROMs | Archive consoles |
-| **[NxBrew](https://nxbrew.com/)** | Nintendo Switch | ROMs Switch |
-| **[hShop](https://hshop.erista.me/)** | 3DS | Spécifique Nintendo 3DS |
-| **[Ziperto](https://www.ziperto.com/)** | Consoles | ROMs diverses |
-| **[NoPayStation](https://nopaystation.com/)** | PlayStation | PS1, PS2, PS3, Vita |
+```bash
+pnpm lint
+pnpm build
+```
 
-***
+## Architecture
 
-## 📚 Livres
+```text
+SITE/
+├─ app/                         # Routes Next.js App Router
+│  ├─ about/
+│  ├─ api/auth/[...all]/        # Route Better Auth
+│  ├─ calendrier/               # Calendrier personnel
+│  ├─ connexion/
+│  ├─ inscription/
+│  ├─ layout.tsx
+│  ├─ page.tsx
+│  └─ globals.css
+├─ features/                    # Fonctionnalités métier
+│  ├─ auth/
+│  └─ calendar/
+├─ components/                  # Composants d'interface partagés
+│  └─ layout/
+├─ lib/                         # Infrastructure partagée
+│  └─ prisma.ts
+├─ prisma/                      # Schéma et migrations
+│  ├─ schema.prisma
+│  └─ migrations/
+├─ docs/                        # Copies centralisées de la documentation
+├─ app/generated/prisma/        # Client généré, ignoré par Git
+├─ Dockerfile
+├─ compose.yaml
+├─ next.config.ts
+├─ prisma7.config.ts
+└─ proxy.ts
+```
 
-### Bibliothèques & Scans
+## Rôle des dossiers
 
-| Site | Type | Infos / Secours |
-| :--- | :--- | :--- |
-| **[Annas Archive](https://fr.annas-archive.li/)** | Omnisearch | Plus grande base mondiale |
-| **[Z-Library](https://fr.1lib.sk/)** | Bibliothèque | Accès universel |
-| **[Bookys](https://www6.bookys-ebooks.com/)** | Presse 🇫🇷 | Mag, Quotidiens et eBooks |
-| **[Zone-Ebook](https://zone-ebook.com/)** | Presse 🇫🇷 | BD, Journaux, Magazines |
-| **[Biblio_EpubFR](https://t.me/Bibliotheque_EpubFR)** | Telegram | eBooks divers |
-| **[BD_FR](https://t.me/bd_fr)** | Telegram | Bandes dessinées |
-| **[BD_Mangas](https://t.me/BD_Mangas)** | Telegram | Mangas & Scans |
+| Dossier | Utilité | Ce qu'on y place |
+| --- | --- | --- |
+| [`app/`](./app/) | Routes Next.js et structure de l'application. | `page.tsx`, `layout.tsx`, routes API, styles globaux et fichiers propres à l'App Router. |
+| [`features/`](./features/) | Fonctionnalités métier autonomes. | Authentification, calendrier, composants métier, Server Actions, types et utilitaires propres à une feature. |
+| [`components/`](./components/) | Composants d'interface réutilisables. | Navigation, footer et composants partagés par plusieurs routes ou features. |
+| [`lib/`](./lib/) | Infrastructure technique partagée. | Client Prisma, clients externes, configurations et utilitaires techniques sans interface utilisateur. |
+| [`prisma/`](./prisma/) | Modèle et évolution de la base de données. | `schema.prisma`, migrations et configuration du fournisseur PostgreSQL. |
 
-***
+### Frontières entre les dossiers
 
-## 📱 Mobile
+- Une route et son chargement initial vont dans [`app/`](./app/).
+- Une logique métier liée à une fonctionnalité va dans [`features/`](./features/).
+- Un composant utilisé dans plusieurs contextes et sans logique métier spécifique va dans [`components/`](./components/).
+- Un accès technique partagé, comme la connexion à la base, va dans [`lib/`](./lib/).
+- La structure de la base et son historique vont dans [`prisma/`](./prisma/).
 
-### Android
+Par exemple, la page [`app/calendrier/page.tsx`](./app/calendrier/page.tsx) vérifie la session et charge les données. Le composant [`features/calendar/SeizureCalendar.tsx`](./features/calendar/SeizureCalendar.tsx) gère l'affichage et les interactions. Les Server Actions sont dans [`features/calendar/actions.ts`](./features/calendar/actions.ts), l'accès à la base est fourni par [`lib/prisma.ts`](./lib/prisma.ts), et les modèles sont définis dans [`prisma/schema.prisma`](./prisma/schema.prisma).
 
-| Outil | Type | Lien / Infos |
-| :--- | :--- | :--- |
-| **[YouTube ReVanced](https://github.com/driftywinds/YT-builds)** | App Android | YouTube sans pub / Background play |
-| **[Obtainium](https://github.com/ImranR98/Obtainium)** | Manager | Mises à jour directes via GitHub |
-| **[NewPipe](https://newpipe.net/)** | Client YT | Open source / Léger |
-| **[APKvision](https://apkvision.org/)** | Mod Store | Applications modifiées |
-| **[Liteapks](https://liteapks.com/)** | Mod Store | Applications modifiées |
+Documentation détaillée :
 
-> **DANGER : SÉCURITÉ APK**
-> Scannez toujours vos fichiers sur **[VirusTotal](https://www.virustotal.com/)** avant installation.
+- [`app/README.md`](./app/README.md) — routes et App Router ;
+- [`features/README.md`](./features/README.md) — organisation métier ;
+- [`features/auth/README.md`](./features/auth/README.md) — authentification ;
+- [`features/calendar/README.md`](./features/calendar/README.md) — calendrier et export ;
+- [`components/README.md`](./components/README.md) — composants partagés ;
+- [`lib/README.md`](./lib/README.md) — infrastructure et client Prisma ;
+- [`prisma/README.md`](./prisma/README.md) — schéma et migrations ;
+- [`docs/README.md`](./docs/README.md) — index centralisé de la documentation ;
+- [`docs/functions.md`](./docs/functions.md) — référence des fonctions et handlers du site ;
+- [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) — architecture technique et flux ;
+- [`docs/DATABASE.md`](./docs/DATABASE.md) — base de données, modèles et migrations ;
+- [`docs/API.md`](./docs/API.md) — routes, Server Actions et échanges de données ;
+- [`docs/CONVENTIONS.md`](./docs/CONVENTIONS.md) — conventions de code et de contribution ;
+- [`.agents/README.md`](./.agents/README.md) — documentation destinée aux assistants IA.
 
-***
+## Feature articles
 
-## 📺 YouTube
+La feature [`features/articles/`](./features/articles/) expose la page [`app/articles/page.tsx`](./app/articles/page.tsx). Elle récupère des articles depuis les API WordPress configurées, nettoie leur contenu distant avec `sanitize-html`, applique un cache d'une heure et tolère les indisponibilités partielles des sources.
 
-### Blocage pub YouTube & autres
+## Flux applicatifs
 
-| Outil | Type | Infos |
-| :--- | :--- | :--- |
-| **[SponsorBlock](https://sponsor.ajay.app/)** | Extension | Saut des segments sponsorisés |
-| **[Stacher](https://stacher.io/)** | Downloader | Interface graphique pour yt-dlp (yt-dlp GUI) |
-| **[yt-dlp](https://github.com/yt-dlp/yt-dlp)** | Downloader | Outil pro en ligne de commande |
+### Visiteur
 
-***
+1. L'utilisateur arrive sur `/`.
+2. Le calendrier affiche des données fictives provenant de `features/calendar/demo-data.ts`.
+3. Les modifications du calendrier de démonstration restent en mémoire.
+4. Le bouton de démarrage propose la connexion ou l'inscription.
 
-## 🛠️ Bureautique
+### Inscription et connexion
 
-### Outils & Scripts
+1. L'utilisateur ouvre `/inscription` ou `/connexion`.
+2. `AuthForm` appelle le client Better Auth.
+3. Better Auth utilise Prisma et PostgreSQL pour créer ou vérifier le compte.
+4. Après une authentification réussie, l'utilisateur est envoyé vers `/calendrier`.
 
-| Outil | Catégorie | Infos |
-| :--- | :--- | :--- |
-| **[MAS](https://github.com/massgravel/Microsoft-Activation-Scripts)** | Activation | Scripts Windows/Office (Clean) |
-| **[Canva Premium](https://www.proinvitelinks.com/?m=1)** | Design | Liens d'invitation premium |
+### Calendrier personnel
 
-***
+1. `/calendrier` vérifie la session côté serveur.
+2. Un visiteur non connecté est redirigé vers `/connexion`.
+3. Les crises sont chargées avec un filtre `userId`.
+4. `SeizureCalendar` affiche les données et déclenche les actions d'ajout/suppression.
+5. Les Server Actions revérifient la session avant toute écriture.
 
-## 🎵 Musique
+## Prisma et base de données
 
-### Téléchargement & Blocage pub
+Le schéma se trouve dans [`prisma/schema.prisma`](./prisma/schema.prisma). Les modèles principaux sont :
 
-| Outil | Catégorie | Infos |
-| :--- | :--- | :--- |
-| **[Lucida](https://lucida.to/)** | Downloader | Spotify, Qobuz, Tidal, Soundcloud (FLAC) |
-| **[Soulseek](http://slsknet.org/news/)** | P2P Audio | Incontournable pour musique rare |
-| **[YetAnotherMusicServer](https://yetanothermusicserver.top/invite/AaWeY6kV)** | Serveur | Deezer, Tidal, Qobuz, Spotify, YT, FLAC |
-| **[DoubleDouble](https://doubledouble.top/)** | Downloader | Multi HI-RES |
-| **[Squid](https://squid.wtf/)** | Deezer | Deezer FLAC downloader |
-| **[Zotify](https://zotify.xyz/zotify/zotify)** | Spotify | Spotify downloader |
-| **[SpotifyDown](https://spotifydown.com/)** | Spotify | 320kbps MP3 |
-| **[myfreemp3](https://myfreemp3.tools/)** | MP3 | Téléchargement direct |
-| **[Tidal-DL](https://github.com/yaronzz/Tidal-Media-Downloader)** | Tidal | Downloader |
-| **[Deemix](https://archive.org/details/deemix)** | Deezer | Downloader |
-| **[D-Fi](https://notabug.org/sayem314/d-fi)** | Deezer | Downloader |
-| **[SCDL](https://github.com/flyingrub/scdl)** | Soundcloud | Downloader |
-| **[Qobuz-DL](https://github.com/vitiko98/qobuz-dl)** | Qobuz | Downloader |
-| **[Orpheus-DL](https://github.com/yarrm80s/orpheusdl)** | Multi | Downloader |
-| **[SpotX](https://github.com/amd64fox/SpotX/)** | Mod Spotify | Bloqueur pub Windows / [Mac](https://github.com/SpotX-CLI/SpotX-Mac) / [Linux](https://github.com/SpotX-CLI/SpotX-Linux) |
-| **[Spicetify](https://spicetify.app/)** | Mod Spotify | Patch, plugins et thèmes Desktop |
+- `Seizure` : crise enregistrée par un utilisateur ;
+- `User` : compte utilisateur ;
+- `Session` : session Better Auth ;
+- `Account` : informations de compte d'authentification ;
+- `Verification` : données de vérification Better Auth.
 
-***
+Le client est généré dans [`app/generated/prisma/`](./app/generated/prisma/) et utilisé via [`lib/prisma.ts`](./lib/prisma.ts). Ce dossier généré ne doit pas être modifié manuellement.
+
+Après une modification du schéma :
+
+```bash
+pnpm exec prisma format
+pnpm exec prisma validate
+pnpm exec prisma migrate dev --name description_du_changement
+pnpm exec prisma generate
+```
+
+Les migrations doivent être contrôlées avant d'être appliquées en production. Une commande destructive comme `prisma migrate reset` efface les données locales et nécessite une validation explicite.
+
+## Authentification et sécurité
+
+- Les secrets restent dans `.env` et ne sont jamais exposés au navigateur.
+- Les sessions sont vérifiées côté serveur avant l'accès aux données personnelles.
+- Les requêtes de crises filtrent par `userId`.
+- Les suppressions utilisent l'identifiant de la crise et l'utilisateur connecté.
+- Les mots de passe sont gérés par Better Auth et ne doivent jamais être journalisés.
+- Les données de santé doivent être protégées conformément aux exigences applicables, notamment le RGPD.
+- Avant un usage public avec de vraies données, étudier les exigences HDS et la sécurité de l'hébergement.
+- Sur un ordinateur partagé, prévenir l'utilisateur que les données présentes dans le stockage local ou le navigateur peuvent être accessibles à d'autres utilisateurs.
+
+## Docker
+
+Le [Dockerfile](./Dockerfile) utilise un build multi-stage :
+
+1. installation des dépendances ;
+2. génération du client Prisma et compilation Next.js ;
+3. exécution de l'image standalone avec un utilisateur non administrateur.
+
+Lancer l'application avec Docker Compose :
+
+```bash
+docker compose up --build
+```
+
+L'application est disponible sur [http://localhost:3000](http://localhost:3000). Les variables de production sont chargées par [compose.yaml](./compose.yaml) depuis `.env`.
+
+Le fichier [`.dockerignore`](./.dockerignore) exclut notamment `node_modules`, `.next`, `.git`, `.env` et le client Prisma généré du contexte Docker.
+
+## Déploiement
+
+### Déploiement Node.js / Vercel
+
+1. Configurer les variables d'environnement de production.
+2. Installer les dépendances avec `pnpm install --frozen-lockfile`.
+3. Appliquer les migrations avec `pnpm exec prisma migrate deploy`.
+4. Construire avec `pnpm build`.
+5. Démarrer avec `pnpm start` ou utiliser la plateforme de déploiement.
+
+### Déploiement Docker
+
+```bash
+docker compose up -d --build
+```
+
+La configuration Next.js utilise `output: "standalone"`, ce qui permet de produire une image finale plus légère contenant uniquement les fichiers nécessaires à l'exécution.
+
+## Règles de contribution
+
+- Écrire l'interface, les commentaires et les messages de commit en français.
+- Utiliser des noms de fichiers et de dossiers descriptifs.
+- Placer la logique métier dans la feature concernée.
+- Placer les composants réellement partagés dans `components/`.
+- Utiliser l'alias `@/` pour les imports internes.
+- Ne pas modifier les fichiers générés manuellement.
+- Ajouter ou mettre à jour la documentation lorsqu'une architecture ou une commande change.
+- Tester avec `pnpm lint` et `pnpm build` avant de considérer une étape terminée.
+
+## Limites et prochaines étapes
+
+- Ajouter une gestion plus complète de la suppression et de la récupération de compte.
+- Prévoir l'import des données locales lors de l'inscription.
+- Ajouter éventuellement un export CSV.
+- Renforcer la validation des entrées et la gestion des erreurs.
+- Étudier la conformité HDS avant l'utilisation de données médicales réelles.
+- Préparer la supervision, les sauvegardes et la stratégie de suppression des données utilisateur.
