@@ -1,3 +1,5 @@
+# DESIGN PAS ENCORE COMMENCE, JUSTE LES FEATURES
+
 # Calendrier Épilepsie
 
 Application web de suivi des crises d'épilepsie. Elle permet de consulter un calendrier de démonstration, de créer un compte, puis d'enregistrer ses crises dans un calendrier personnel et d'exporter un journal PDF pour son médecin.
