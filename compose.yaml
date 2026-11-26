@@ -1,5 +1,5 @@
 # compose.yaml
-name: epilepsie-site
+name: EPILEPSIE_PRODUCTION
 services:
   app:
     build: .
