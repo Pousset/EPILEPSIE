@@ -24,9 +24,12 @@ export default defineConfig({
     url: `http://localhost:${PORT}`,
     reuseExistingServer: false,
     timeout: 120_000,
-    env: {
+        env: {
       DATABASE_URL: testUrl,
       BETTER_AUTH_URL: `http://localhost:${PORT}`,
+      // Aucun vrai email pendant les tests : les valeurs vides l'emportent sur celles du .env
+      RESEND_API_KEY: "",
+      EMAIL_FROM: "",
     },
   },
 });
