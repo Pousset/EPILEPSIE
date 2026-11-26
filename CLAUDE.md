@@ -49,11 +49,14 @@ app/                         # Routes Next.js et App Router
 ├─ inscription/page.tsx      # Inscription
 ├─ about/page.tsx
 ├─ contact/page.tsx
+├─ annuaire/
+├─ associations/
 └─ api/auth/[...all]/        # Route Better Auth
 
 features/                    # Fonctionnalités métier autonomes
 ├─ auth/                     # Better Auth, formulaires et session
-└─ calendar/                 # Calendrier, actions, types et export PDF
+├─ calendar/                 # Calendrier, actions, types et export PDF
+└─ information/
 
 components/                  # Composants d'interface partagés
 └─ layout/                   # Navbar et Footer
@@ -91,6 +94,7 @@ Documentation à consulter avant une modification importante :
 - `features/README.md` pour l'organisation métier ;
 - `features/auth/README.md` pour l'authentification ;
 - `features/calendar/README.md` pour le calendrier ;
+- `features/information/README.md` ;
 - `components/README.md` pour les composants partagés ;
 - `lib/README.md` pour Prisma ;
 - `prisma/README.md` pour le schéma et les migrations.

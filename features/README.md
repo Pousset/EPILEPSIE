@@ -1,31 +1,85 @@
 # Dossier `features`
 
-Le dossier `features` regroupe les fonctionnalités métier de l'application. Chaque feature rassemble ses composants, sa logique, ses types et sa documentation afin de rester autonome et maintenable.
+Le dossier `features` regroupe les fonctionnalités métier de l'application. Chaque feature rassemble ses composants, sa logique, ses types et sa documentation afin de rester autonome et facilement maintenable.
+
+## Arborescence
+
+```text
+features/
+├─ README.md
+├─ auth/
+│  ├─ README.md
+│  ├─ AuthForm.tsx
+│  ├─ StartCalendarButton.tsx
+│  ├─ auth.ts
+│  └─ auth-client.ts
+├─ calendar/
+│  ├─ README.md
+│  ├─ SeizureCalendar.tsx
+│  ├─ actions.ts
+│  ├─ demo-data.ts
+│  ├─ export-pdf.ts
+│  ├─ options.ts
+│  └─ types.ts
+└─ information/
+   ├─ README.md
+   ├─ AssociationCard.tsx
+   ├─ DirectoryCard.tsx
+   ├─ associations.ts
+   ├─ countries.ts
+   ├─ directory.ts
+   ├─ format.ts
+   └─ types.ts
+```
 
 ## Features disponibles
 
-| Feature | Responsabilité | Route principale | Documentation |
-| --- | --- | --- | --- |
-| `articles` | Agrégation d'articles publics sur l'épilepsie depuis des sources externes, nettoyage du contenu et lecture détaillée. | `/articles` | [`articles/README.md`](./articles/README.md) |
-| `auth` | Inscription, connexion, session utilisateur et accès au calendrier privé. | `/connexion`, `/inscription` | [`auth/README.md`](./auth/README.md) |
-| `calendar` | Affichage du calendrier, ajout/suppression de crises, données de démonstration et export PDF. | `/`, `/calendrier` | [`calendar/README.md`](./calendar/README.md) |
+| Feature | Responsabilité | Documentation |
+| --- | --- | --- |
+| `auth` | Inscription, connexion, session utilisateur et accès au calendrier privé. | [`auth/README.md`](./auth/README.md) |
+| `calendar` | Affichage du calendrier, ajout/suppression de crises, données de démonstration et export PDF. | [`calendar/README.md`](./calendar/README.md) |
+| `information` | Contenu d'information statique : associations et annuaire des centres spécialisés (France, Belgique, Suisse). | [`information/README.md`](./information/README.md) |
 
-## Articles
+## Organisation d'une feature
 
-La feature `articles` récupère des publications d'Épilepsie-France et de la Fondation Française pour la Recherche sur l'Épilepsie depuis leurs API REST WordPress. Les résultats sont mis en cache pendant une heure, les sources sont tolérantes aux erreurs et le HTML externe est nettoyé avec `sanitize-html`.
+Une feature peut contenir :
 
-## Auth
+- des composants React propres à la fonctionnalité ;
+- des modules serveur et des Server Actions ;
+- des types TypeScript partagés ;
+- des constantes et options d'interface ;
+- des données de démonstration ou des utilitaires métier ;
+- un `README.md` expliquant son fonctionnement.
 
-La feature `auth` regroupe Better Auth, le client navigateur, les formulaires d'inscription/connexion et le bouton d'accès au calendrier personnel.
+Les composants génériques utilisés par plusieurs fonctionnalités restent dans [`../components/`](../components/). Les routes Next.js restent dans [`../app/`](../app/).
 
-## Calendar
+## Règles d'import
 
-La feature `calendar` gère le calendrier de démonstration, le calendrier personnel protégé, l'ajout/suppression de crises et l'export PDF.
+Utiliser l'alias `@/features/...` pour importer un module depuis une autre partie de l'application :
 
-## Organisation
+```tsx
+import AuthForm from "@/features/auth/AuthForm";
+import SeizureCalendar from "@/features/calendar/SeizureCalendar";
+```
 
-Une feature peut contenir des composants React, des Server Actions, des types, des constantes, des données de démonstration, des utilitaires métier et un README local. Les composants génériques restent dans [`../components/`](../components/) et les routes dans [`../app/`](../app/).
+À l'intérieur d'une feature, conserver également des imports explicites avec l'alias `@/features/...` lorsque cela améliore la lisibilité et évite les chemins relatifs fragiles.
 
-Utiliser l'alias `@/features/...` pour les imports. Les composants sont des Server Components par défaut ; ajouter `"use client"` uniquement lorsque l'état, les hooks ou les API navigateur sont nécessaires.
+## Server et Client Components
 
-Toute feature qui accède à des données personnelles doit vérifier la session côté serveur, valider les entrées et filtrer les requêtes par utilisateur.
+- Les composants sont des Server Components par défaut.
+- Ajouter `"use client"` uniquement lorsqu'un composant utilise un hook, un état local, un effet ou une API du navigateur.
+- Garder les accès à Prisma, les secrets et les vérifications de session côté serveur.
+- Exposer au navigateur uniquement les données nécessaires au rendu et aux interactions.
+
+## Ajouter une nouvelle feature
+
+1. Créer un dossier sous `features/` avec un nom descriptif en anglais et en minuscules.
+2. Regrouper les composants et la logique propres à cette fonctionnalité dans ce dossier.
+3. Ajouter un `README.md` local.
+4. Ajouter les routes correspondantes dans [`../app/`](../app/).
+5. Mettre à jour ce README si la feature devient une partie importante de l'application.
+6. Vérifier le projet avec `pnpm build`.
+
+## Sécurité
+
+Les fonctionnalités Auth et Calendar manipulent des données potentiellement sensibles. Toute nouvelle feature qui accède à des données personnelles doit vérifier la session côté serveur, valider les entrées et limiter les requêtes à l'utilisateur concerné.
