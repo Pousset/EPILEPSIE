@@ -14,14 +14,19 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="flex items-center justify-between border-b px-6 py-4">
+    <nav className="flex items-center justify-between border-b px-6 py-4 print:hidden">
       <Link href="/" className="text-lg font-bold">
         MonSite
       </Link>
 
       <ul className="flex items-center gap-6">
         <li><Link href="/">Accueil</Link></li>
-        {session && <li><Link href="/calendrier">Mon calendrier</Link></li>}
+        {session && (
+          <>
+            <li><Link href="/calendrier">Mon calendrier</Link></li>
+            <li><Link href="/statistiques">Statistiques</Link></li>
+          </>
+        )}
         <li><Link href="/articles">Articles</Link></li>
         <li><Link href="/about">À propos</Link></li>
         <li><Link href="/contact">Contact</Link></li>

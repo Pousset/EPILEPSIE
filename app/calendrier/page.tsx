@@ -1,12 +1,15 @@
-// app/calendrier/page.tsx
 import { Suspense } from "react";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { connection } from "next/server";
 import { auth } from "@/features/auth/auth";
 import { prisma } from "@/lib/prisma";
 import SeizureCalendar from "@/features/calendar/SeizureCalendar";
 
 async function PersonalCalendar() {
+  // Cette page dépend de la requête : on arrête le pré-rendu ici.
+  await connection();
+
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) redirect("/connexion");
 

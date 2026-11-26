@@ -1,4 +1,5 @@
 import type { Seizure } from "@/features/calendar/types";
+import { computeStats, formatSeconds, monthlyCounts } from "@/features/stats/stats";
 
 // "2026-11-24" -> "24/11/2026" (sans passer par Date, donc sans décalage de fuseau)
 export function formatDate(key: string) {
@@ -10,6 +11,39 @@ export function dateKey(d: Date) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
     d.getDate()
   ).padStart(2, "0")}`;
+}
+
+type CountList = [string, number][];
+
+const formatCounts = (items: CountList) =>
+  items.map(([label, count]) => `${label} (${count})`).join(", ");
+
+// Lignes de résumé affichées en tête du PDF
+export function buildSummaryLines(seizures: Seizure[], today = new Date()): string[] {
+  const stats = computeStats(seizures, today);
+  const months = monthlyCounts(seizures);
+
+  const lines = [`Nombre total de crises : ${stats.total}`];
+
+  // Détail mensuel seulement si la période couvre plusieurs mois
+  if (months.length > 1) {
+    const perMonth = months.map(([key, count]) => [key.split("-").reverse().join("/"), count]);
+    lines.push(`Par mois : ${formatCounts(perMonth as CountList)}`);
+  }
+
+  lines.push(`Par type : ${formatCounts(stats.byType)}`);
+
+  lines.push(
+    stats.averageDurationSeconds !== null
+      ? `Durée moyenne : ${formatSeconds(stats.averageDurationSeconds)} (calculée sur ${stats.durationsUsed} crise(s) dont la durée est renseignée)`
+      : "Durée moyenne : non calculable (durées non renseignées)",
+  );
+
+  lines.push(`Déclencheurs notés : ${formatCounts(stats.byTrigger)}`);
+
+  if (stats.lastDate) lines.push(`Dernière crise : ${formatDate(stats.lastDate)}`);
+
+  return lines;
 }
 
 export function countBy(list: Seizure[], key: "type" | "trigger") {
@@ -63,14 +97,7 @@ export async function exportSeizuresPdf({ seizures, userName, periodLabel }: Exp
   y += 6;
   doc.setFontSize(10);
 
-  const byType = countBy(sorted, "type").map(([k, v]) => `${k} (${v})`).join(", ");
-  const byTrigger = countBy(sorted, "trigger").map(([k, v]) => `${k} (${v})`).join(", ");
-
-  const summary = [
-    `Nombre total de crises : ${sorted.length}`,
-    `Par type : ${byType}`,
-    `Déclencheurs notés : ${byTrigger}`,
-  ];
+  const summary = buildSummaryLines(sorted);
 
   for (const line of summary) {
     const wrapped = doc.splitTextToSize(line, pageWidth - 28) as string[];

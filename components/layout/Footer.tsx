@@ -1,5 +1,6 @@
 // components/Footer.tsx
 import Link from "next/link";
+import EmergencyButton from "@/components/layout/EmergencyButton";
 
 async function getYear() {
   "use cache";
@@ -10,12 +11,15 @@ export default async function Footer() {
   const year = await getYear();
 
   return (
-    <footer className="border-t px-6 py-6 mt-auto">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <footer className="mt-8 border-t p-6 print:hidden">
+      <div className="grid grid-cols-1 items-center gap-4 sm:grid-cols-3">
         <p className="text-sm text-gray-500">
           © {year} MonSite. Tous droits réservés.
         </p>
-        <ul className="flex gap-6 text-sm">
+        <div className="flex justify-center">
+          <EmergencyButton />
+        </div>
+        <ul className="flex justify-center gap-6 text-sm sm:justify-end">
           <li><Link href="/about">À propos</Link></li>
           <li><Link href="/contact">Contact</Link></li>
         </ul>
