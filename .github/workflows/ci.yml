@@ -24,6 +24,12 @@ jobs:
     name: Qualité (validate, lint, tests unitaires, build)
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      # Valeurs factices nécessaires à Prisma pendant l'installation et la génération du client.
+      DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
+      DATABASE_URL_UNPOOLED: postgresql://ci:ci@localhost:5432/ci
+      BETTER_AUTH_SECRET: ci-secret-factice-pour-le-build
+      BETTER_AUTH_URL: http://localhost:3000
     steps:
       - uses: actions/checkout@v4
 
@@ -48,6 +54,12 @@ jobs:
     name: Audit des dépendances (prod)
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    env:
+      # Prisma generate est lancé automatiquement pendant pnpm install.
+      DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
+      DATABASE_URL_UNPOOLED: postgresql://ci:ci@localhost:5432/ci
+      BETTER_AUTH_SECRET: ci-secret-factice-pour-le-build
+      BETTER_AUTH_URL: http://localhost:3000
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
