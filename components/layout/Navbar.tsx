@@ -30,6 +30,7 @@ export default function Navbar() {
         <li><Link href="/articles">Articles</Link></li>
         <li><Link href="/associations">Associations</Link></li>
         <li><Link href="/annuaire">Annuaire</Link></li>
+        <li><Link href="/traitements">Traitements</Link></li>
         <li><Link href="/about">À propos</Link></li>
         <li><Link href="/contact">Contact</Link></li>
 
