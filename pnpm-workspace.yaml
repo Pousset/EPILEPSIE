@@ -3,3 +3,7 @@ allowBuilds:
   core-js: true
   esbuild: true
   prisma: true
+
+overrides:
+  # Prisma 7.10.1 demande effect 3.x ; 3.22.1 corrige la vulnérabilité ReDoS.
+  effect: 3.22.1
