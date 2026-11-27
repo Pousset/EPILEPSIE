@@ -40,7 +40,13 @@ jobs:
           node-version: 22
           cache: pnpm
 
-      - run: pnpm install --frozen-lockfile
+      - name: Installer les dépendances
+        env:
+          DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
+          DATABASE_URL_UNPOOLED: postgresql://ci:ci@localhost:5432/ci
+          BETTER_AUTH_SECRET: ci-secret-factice-pour-le-build
+          BETTER_AUTH_URL: http://localhost:3000
+        run: pnpm install --frozen-lockfile
 
       - run: pnpm exec prisma validate
 
@@ -67,7 +73,13 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
-      - run: pnpm install --frozen-lockfile
+      - name: Installer les dépendances
+        env:
+          DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
+          DATABASE_URL_UNPOOLED: postgresql://ci:ci@localhost:5432/ci
+          BETTER_AUTH_SECRET: ci-secret-factice-pour-le-build
+          BETTER_AUTH_URL: http://localhost:3000
+        run: pnpm install --frozen-lockfile
       - name: pnpm audit --prod
         run: |
           set +e
