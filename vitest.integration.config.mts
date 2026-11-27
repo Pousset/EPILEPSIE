@@ -1,21 +1,27 @@
+import { readFileSync } from "node:fs";
+import { parse } from "dotenv";
 import { defineConfig } from "vitest/config";
 
-function loadEnvFile(path: string) {
+function readEnvFile(path: string) {
   try {
-    process.loadEnvFile(path);
+    return parse(readFileSync(path));
   } catch {
-    // fichier absent : la vérification ci-dessous le signalera
+    return {};
   }
 }
 
-loadEnvFile(".env.test");
-const testUrl = process.env.DATABASE_URL_TEST;
+const testEnv = readEnvFile(".env.test");
+const productionEnv = readEnvFile(".env");
 
-loadEnvFile(".env");
-const prodUrl = process.env.DATABASE_URL;
+// CI injects DATABASE_URL and DATABASE_URL_TEST with the same test database.
+// Read the production URL only from .env to avoid comparing those CI values.
+const testUrl = process.env.DATABASE_URL_TEST ?? testEnv.DATABASE_URL_TEST;
+const prodUrl = productionEnv.DATABASE_URL;
 
 if (!testUrl) throw new Error("DATABASE_URL_TEST manquante (.env.test)");
-if (testUrl === prodUrl) throw new Error("DATABASE_URL_TEST ne doit pas être la vraie base");
+if (prodUrl && testUrl === prodUrl) {
+  throw new Error("DATABASE_URL_TEST ne doit pas être la vraie base");
+}
 
 export default defineConfig({
   resolve: { tsconfigPaths: true },
