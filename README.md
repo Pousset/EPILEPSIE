@@ -373,3 +373,5 @@ La configuration Next.js utilise `output: "standalone"`, ce qui permet de produi
 - Renforcer la validation des entrées et la gestion des erreurs.
 - Étudier la conformité HDS avant l'utilisation de données médicales réelles.
 - Préparer la supervision, les sauvegardes et la stratégie de suppression des données utilisateur.
+
+test
