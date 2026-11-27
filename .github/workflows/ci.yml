@@ -1,0 +1,112 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main, Dev]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  # Valeurs factices : suffisent pour prisma validate et le build, sans jamais toucher à la production.
+  DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
+  DATABASE_URL_UNPOOLED: postgresql://ci:ci@localhost:5432/ci
+  BETTER_AUTH_SECRET: ci-secret-factice-pour-le-build
+  BETTER_AUTH_URL: http://localhost:3000
+
+jobs:
+  verify:
+    name: Qualité (validate, lint, tests unitaires, build)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4   # version lue dans "packageManager" de package.json
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm exec prisma validate
+
+      - run: pnpm lint
+
+      - run: pnpm test
+
+      - run: pnpm build
+
+  audit:
+    name: Audit des dépendances (prod)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: pnpm audit --prod
+        run: |
+          set +e
+          pnpm audit --prod 2>&1 | tee audit.txt
+          status=${PIPESTATUS[0]}
+          {
+            echo "## pnpm audit --prod"
+            echo '```'
+            cat audit.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          # Visible dans le résumé du run ; bloquant uniquement pour les failles hautes/critiques.
+          pnpm audit --prod --audit-level=high > /dev/null 2>&1 || exit 1
+          exit 0
+
+  integration-e2e:
+    name: Intégration et e2e (branche Neon de test)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    # Les PR venant de forks n'ont pas accès aux secrets.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    env:
+      # La base de test remplace DATABASE_URL : la production n'est jamais référencée ici.
+      DATABASE_URL: ${{ secrets.DATABASE_URL_TEST }}
+      DATABASE_URL_UNPOOLED: ${{ secrets.DATABASE_URL_TEST }}
+      DATABASE_URL_TEST: ${{ secrets.DATABASE_URL_TEST }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Appliquer les migrations sur la branche de test
+        run: pnpm exec prisma migrate deploy
+
+      - name: Tests d'intégration
+        run: pnpm test:integration
+
+      - name: Installer Playwright
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Tests e2e
+        run: pnpm test:e2e
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
