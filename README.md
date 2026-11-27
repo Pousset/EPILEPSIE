@@ -147,6 +147,42 @@ pnpm lint
 pnpm build
 ```
 
+## Synchroniser `Dev` avec `main`
+
+### **1. Vérifie ta branche actuelle**
+
+```
+git branch --show-current
+```
+
+### **2. Bascule sur Dev et récupère les dernières références**
+
+```
+git switch Dev
+git fetch origin
+```
+
+### **3. Intègre main dans Dev**
+
+```
+git merge origin/main
+```
+
+Si des conflits apparaissent, résous-les avant de terminer le merge.
+
+### **4. Envoie Dev sur GitHub**
+
+```
+git push origin Dev
+```
+
+### **5. Vérifie**
+
+```
+git status -sb
+git log --oneline --graph --decorate -10
+```
+
 ## Architecture
 
 ```text
