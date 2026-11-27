@@ -2,9 +2,9 @@ name: CI
 
 on:
   pull_request:
-    branches: [dev, main]
+    branches: [Dev, main]
   push:
-    branches: [dev, main]
+    branches: [Dev, main]
 
 # Droits minimaux : la CI peut seulement lire le code.
 permissions:
