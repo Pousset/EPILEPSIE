@@ -4,10 +4,11 @@ import { headers } from "next/headers";
 import { auth } from "@/features/auth/auth";
 import { isDevLoginEnabled } from "@/features/auth/dev-login-config";
 import { prisma } from "@/lib/prisma";
+import { DEV_USER_EMAIL } from "@/features/auth/dev-login-config";
 
 const DEV_USER = {
   name: "Dev",
-  email: "dev@example.com",
+  email: DEV_USER_EMAIL,
   password: "dev-password-local-only",
 };
 
