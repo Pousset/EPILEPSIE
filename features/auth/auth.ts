@@ -3,9 +3,11 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "@/lib/prisma";
 import { sendEmailInBackground } from "@/lib/email";
 import { nextCookies } from "better-auth/next-js";
+import { devAccountGuard } from "@/features/auth/dev-account-guard";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, { provider: "postgresql" }),
+  hooks: { before: devAccountGuard },
   emailAndPassword: {
     enabled: true,
     minPasswordLength: 8,
